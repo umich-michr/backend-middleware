@@ -1,0 +1,51 @@
+{
+  "name": "backend-middleware",
+  "version": "16.01.05",
+  "description": "The nodejs server middleware that serves json documents as http resources for user-defined or restful urls. Helps with developing web application html/js clients that will communicate with a backend serving the data user interface needs by mocking the backend.",
+  "main": "backend.middleware.js",
+  "scripts": {
+    "test": "./node_modules/mocha/bin/mocha ./test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/michr-cri/backend-middleware.git"
+  },
+  "keywords": [
+    "backend",
+    "middleware",
+    "backend-middleware",
+    "mock-backend",
+    "backend",
+    "mock-data",
+    "backend-data"
+  ],
+  "author": {
+    "name": "Michigan Institute for Clinical & Health Research",
+    "url": "https://www.michr.umich.edu"
+  },
+  "contributors": [
+    {
+      "name": "Melih Gunal"
+    },
+    {
+      "name": "Raden Tonev"
+    },
+    {
+      "name": "Tianyun Zhang"
+    }
+  ],
+  "license": "SEE LICENSE IN LICENSE",
+  "bugs": {
+    "url": "https://github.com/michr-cri/backend-middleware/issues"
+  },
+  "homepage": "https://github.com/michr-cri/backend-middleware#readme",
+  "devDependencies": {
+    "chai": "3.5.0",
+    "mocha": "3.2.0",
+    "sinon": "^1.17.7"
+  },
+  "dependencies": {
+    "moment": "^2.17.1",
+    "uniloc": "0.3.0"
+  }
+}
