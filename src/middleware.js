@@ -3,14 +3,15 @@ var helpers = require('./helper');
 
 var Middleware = function(config){
 
-    var handlers = new HandlerProvider(config.routes,config.handlers);
+    var handlers = new HandlerProvider(config.routes,config.handlers, config.urlParameterDateFormat);
+
     var writeHeaders = function(statusCode, headers, res){
         if(helpers.isResponseHeader(headers)){
             for(var headerName in headers){
                 res.setHeader(headerName,headers[headerName]);
             }
         }
-        if(statusCode && !isNaN(statusCode){
+        if(statusCode && !isNaN(statusCode)) {
             resWriteHead(statusCode);
         }
     };
@@ -20,11 +21,11 @@ var Middleware = function(config){
 
         if(!response){
             next();
+        } else {
+            writeHeaders(response.statusCode, response.headers, res);
+            res.write(response.body ? response.body : '');
+            //{ name: undefined, options: {} }
         }
-
-        res.writeHead(response.statusCode,response.headers);
-        res.write(response.body?response.body:'');
-        //{ name: undefined, options: {} }
     };
 };
 
