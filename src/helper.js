@@ -28,7 +28,7 @@ function HelperFunctions(){
 
     this.objectHasKeys = function(object)
     {
-        if (!isObject(object)) {
+        if (!this.isObject(object)) {
             throw new Error('Object must be specified.');
         }
 
@@ -47,7 +47,7 @@ function HelperFunctions(){
     };
 
     this.isResponseHeader = function(object) {
-        return !isArray(obj) && objectHasKeys(obj);
+        return object && !this.isArray(object) && this.objectHasKeys(object);
     };
 
 }

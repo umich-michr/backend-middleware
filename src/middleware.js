@@ -2,7 +2,6 @@ var HandlerProvider = require('./handler.provider');
 var helpers = require('./helper');
 
 var Middleware = function(config){
-
     var handlers = new HandlerProvider(config.routes,config.handlers, config.urlParameterDateFormat);
 
     var writeHeaders = function(statusCode, headers, res){
@@ -12,13 +11,13 @@ var Middleware = function(config){
             }
         }
         if(statusCode && !isNaN(statusCode)) {
-            resWriteHead(statusCode);
+            res.writeHead(statusCode);
         }
     };
 
     return function (req, res, next) {
         var response = handlers.handle(req);
-
+        
         if(!response){
             next();
         } else {
