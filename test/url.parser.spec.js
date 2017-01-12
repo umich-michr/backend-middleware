@@ -41,7 +41,7 @@ describe('Query String Parser reads the url to build objects the dao could use t
     //     assert.equal(resourceName,expected,'The resource name is not found correctly in the url.');
     // });
 
-    it('should return array of key value pair arrays from url', function() {
+    it('testExtractQueryStringParameters(String queryString) - should return array of key value pair arrays from url', function() {
         sinon.stub(helperFunctions, 'castToParamValue', function(value) {
             if(value===startDateString){
                 return startDate;
@@ -72,7 +72,7 @@ describe('Query String Parser reads the url to build objects the dao could use t
         assert.deepEqual(queryStringParameters,expected,'Array of key value pair arrays is not built correctly.');
     });
 
-    it('should return an object that dao could use to query database from a url', function() {
+    it('testQueryStringToDaoParameter(String resourceName, String queryString) - should return an object that dao could use to query database from a url', function() {
 
         var daoParameter = urlParser.queryStringToDaoParameter('services-provided',queryString);
         var expected = {

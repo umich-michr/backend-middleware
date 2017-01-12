@@ -22,8 +22,8 @@ function HelperFunctions(){
     };
 
     this.isObject = function(obj) {
-            var type = typeof obj;
-            return type === 'function' || type === 'object' && !!obj;
+        var type = typeof obj;
+        return type === 'function' || type === 'object' && !!obj;
     };
 
     this.objectHasKeys = function(object)
@@ -34,15 +34,15 @@ function HelperFunctions(){
 
         if ('undefined' !== Object.keys) {
             // Using ECMAScript 5 feature.
-            return (0 === Object.keys(object).length);
+            return (0 !== Object.keys(object).length);
         } else {
             // Using legacy compatibility mode.
             for (var key in object) {
                 if (object.hasOwnProperty(key)) {
-                    return false;
+                    return true;
                 }
             }
-            return true;
+            return false;
         }
     };
 

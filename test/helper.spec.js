@@ -6,7 +6,7 @@ var helperFunctions = require('../src/helper');
 var defaultDateFormat = 'YYYY-MM-DDThh.mm.ss.sss';
 
 describe('Helper functions used to do boring things such as  parsing values, slicing dicing strings etc.', function() {
-    it('Test castToParamValue(date): should parse a string matching a date format to date', function() {
+    it('testCastToParamValue(date) - should parse a string matching a date format to date', function() {
         var value ='2017-01-05T00.00.00.000';
         var expected = moment(value,defaultDateFormat);
 
@@ -21,7 +21,7 @@ describe('Helper functions used to do boring things such as  parsing values, sli
         assert.deepEqual(actual,expected,'The date string matching user specified date format is not converted to date object correctly.');
     });
 
-    it('Test castToParamValue(numeric): should parse a string to number if it is a number', function() {
+    it('testCastToParamValue(numeric) - should parse a string to number if it is a number', function() {
         var value ='5';
         var expected = 5;
 
@@ -30,7 +30,7 @@ describe('Helper functions used to do boring things such as  parsing values, sli
         assert.strictEqual(actual,expected,'The numeric string is not converted to number correctly.');
     });
 
-    it('Test castToParamValue(string): should leave string as string', function() {
+    it('testCastToParamValue(string) - should leave string as string', function() {
         var value ='abc';
         var expected = 'abc';
 
@@ -39,7 +39,7 @@ describe('Helper functions used to do boring things such as  parsing values, sli
         assert.strictEqual(actual,expected,'The string is not left as string.');
     });
 
-    it('Test isArray(object): should return true if an object is an array', function() {
+    it('testIsArray(object) - should return true if an object is an array', function() {
         var array = [];
 
         assert.isTrue(helperFunctions.isArray(array));
@@ -50,4 +50,8 @@ describe('Helper functions used to do boring things such as  parsing values, sli
         assert.isFalse(helperFunctions.isArray(5));
         assert.isFalse(helperFunctions.isArray(undefined));
     });
+
+    it('testIsObject(object) - should return true if an object is an object (array, object, function)', function(){});
+
+    it('testObjectHasKeys(object|array) - should return true if an object has keys.', function(){})
 });

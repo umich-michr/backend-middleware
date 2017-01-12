@@ -1,8 +1,8 @@
-var HandlerProvider = require('./handler.provider');
+var Handler = require('./handler');
 var helpers = require('./helper');
 
 var Middleware = function(config){
-    var handlers = new HandlerProvider(config.routes,config.handlers, config.urlParameterDateFormat);
+    var handler = new Handler(config.routes,config.handlers,config.urlParameterDateFormat);
 
     var writeHeaders = function(statusCode, headers, res){
         if(helpers.isResponseHeader(headers)){
@@ -16,14 +16,13 @@ var Middleware = function(config){
     };
 
     return function (req, res, next) {
-        var response = handlers.handle(req);
-        
+        var response = handler.handle(req);
+
         if(!response){
             next();
         } else {
             writeHeaders(response.statusCode, response.headers, res);
             res.write(response.body ? response.body : '');
-            //{ name: undefined, options: {} }
         }
     };
 };
