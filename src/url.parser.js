@@ -1,4 +1,5 @@
 var helperFunctions = require('./helper');
+var _ = require('underscore');
 
 function UrlParser(queryStringParamObjectAttributeMap, paramValueDateFormat) {
 
@@ -30,7 +31,7 @@ function UrlParser(queryStringParamObjectAttributeMap, paramValueDateFormat) {
     var updateQueryParamObjectValue = function(queryParamObject, key, value){
         var existingObjectKeyValue = queryParamObject[key];
         if(existingObjectKeyValue) {
-            if(helperFunctions.isArray(existingObjectKeyValue)) {
+            if(_.isArray(existingObjectKeyValue)) {
                 existingObjectKeyValue.push(value);
             }
             else {

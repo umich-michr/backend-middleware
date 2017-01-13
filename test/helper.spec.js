@@ -38,20 +38,4 @@ describe('Helper functions used to do boring things such as  parsing values, sli
 
         assert.strictEqual(actual,expected,'The string is not left as string.');
     });
-
-    it('testIsArray(object) - should return true if an object is an array', function() {
-        var array = [];
-
-        assert.isTrue(helperFunctions.isArray(array));
-
-        assert.isFalse(helperFunctions.isArray(''));
-        assert.isFalse(helperFunctions.isArray('a'));
-        assert.isFalse(helperFunctions.isArray({}));
-        assert.isFalse(helperFunctions.isArray(5));
-        assert.isFalse(helperFunctions.isArray(undefined));
-    });
-
-    it('testIsObject(object) - should return true if an object is an object (array, object, function)', function(){});
-
-    it('testObjectHasKeys(object|array) - should return true if an object has keys.', function(){})
 });

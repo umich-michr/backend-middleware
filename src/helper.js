@@ -1,4 +1,7 @@
 var moment = require('moment');
+var _ = require('underscore');
+var fs = require('fs');
+
 function HelperFunctions(){
     this.defaultDateFormat = 'YYYY-MM-DDThh.mm.ss.sss';
 
@@ -17,37 +20,19 @@ function HelperFunctions(){
         }
     };
 
-    this.isArray = Array.isArray || function(obj) {
-        return toString.call(obj) === '[object Array]'
-    };
-
-    this.isObject = function(obj) {
-        var type = typeof obj;
-        return type === 'function' || type === 'object' && !!obj;
-    };
-
-    this.objectHasKeys = function(object)
-    {
-        if (!this.isObject(object)) {
-            throw new Error('Object must be specified.');
-        }
-
-        if ('undefined' !== Object.keys) {
-            // Using ECMAScript 5 feature.
-            return (0 !== Object.keys(object).length);
-        } else {
-            // Using legacy compatibility mode.
-            for (var key in object) {
-                if (object.hasOwnProperty(key)) {
-                    return true;
-                }
-            }
-            return false;
-        }
-    };
-
     this.isResponseHeader = function(object) {
-        return object && !this.isArray(object) && this.objectHasKeys(object);
+        return object && !_.isArray(object) && _.keys(object).length>0;
+    };
+
+    this.getFileNamesInDirectory = function(path) {
+        var dataFileNames = [];
+        var fileNames = fs.readdirSync(path);
+
+        fileNames.forEach(function(fileName){
+            dataFileNames.push(path + fileName);
+        });
+
+        return dataFileNames;
     };
 
 }
