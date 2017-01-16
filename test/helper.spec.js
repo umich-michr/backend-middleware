@@ -5,7 +5,7 @@ var sinon = require('sinon');
 var helperFunctions = require('../src/helper');
 var defaultDateFormat = 'YYYY-MM-DDThh.mm.ss.sss';
 
-describe('Helper functions used to do boring things such as  parsing values, slicing dicing strings etc.', function() {
+describe('Helper functions used to do boring things such as parsing values, slicing dicing strings etc.', function() {
     it('testCastToParamValue(date) - should parse a string matching a date format to date', function() {
         var value ='2017-01-05T00.00.00.000';
         var expected = moment(value,defaultDateFormat);
@@ -37,5 +37,47 @@ describe('Helper functions used to do boring things such as  parsing values, sli
         var actual = helperFunctions.castToParamValue(value);
 
         assert.strictEqual(actual,expected,'The string is not left as string.');
+    });
+
+    it('testAbsolutePath(string) - the path relative to the project root should be transformed to absoule path string', function() {
+        var projectPath = require('path').dirname(__dirname);
+
+        var actual = helperFunctions.absolutePath('.',projectPath);
+
+        assert.strictEqual(actual,projectPath+'/','The absolute path is not found correctly');
+
+        actual = helperFunctions.absolutePath('./',projectPath);
+
+        assert.strictEqual(actual,projectPath+'/','The absolute path is not found correctly');
+
+        actual = helperFunctions.absolutePath('/./',projectPath);
+
+        assert.strictEqual(actual,projectPath+'/','The absolute path is not found correctly');
+
+        actual = helperFunctions.absolutePath('././',projectPath);
+
+        assert.strictEqual(actual,projectPath+'/','The absolute path is not found correctly');
+
+        actual = helperFunctions.absolutePath('././../.../a///b//.//..//././/./e/.',projectPath);
+
+        assert.strictEqual(actual,projectPath+'/../../a/b/../e','The absolute path is not found correctly');
+    });
+
+    it('testReadFilesToMap(String path, String fileNameExtension) - should read the json datafiles residing in the path relative to the project root into an object whose keys are found by stripping off fileNameExtension', function() {
+        var path = './test/test-data';
+
+        var actual = helperFunctions.readFilesToMap(path,'.json');
+
+        assert.equal(2,Object.keys(actual).length);
+        assert.equal(3,Object.keys(actual['people']).length);
+        assert.equal(2,Object.keys(actual['company-departments']).length);
+
+        actual = helperFunctions.readFilesToMap(path);
+
+        assert.equal(0,Object.keys(actual).length,'The file extension does not match any file in the path, should have returned an empty object');
+
+        actual = helperFunctions.readFilesToMap('.git');
+
+        assert.equal(0,Object.keys(actual).length,'There are no files that could be used by node require statement in the path provided so should have returned an empty object');
     });
 });

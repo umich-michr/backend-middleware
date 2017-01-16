@@ -11,12 +11,10 @@ var people = [{
     lastName: 'Doe'
 }];
 var resourceDao = {
-    getAll:function(resourceName){
-        if(resourceName==='people'){
+    get:function(resourceName, daoResourceQueryObject){
+        if(resourceName==='people' && !daoResourceQueryObject){
             return people;
         }
-    },
-    get:function(resourceName, daoResourceQueryObject){
         if(resourceName==='people' && daoResourceQueryObject.id==1){
             return people[0];
         }
@@ -25,7 +23,7 @@ var resourceDao = {
 
 var resourceGetter = proxyquire('../../src/handlers/resource.getter',{'../daos/resource.dao':resourceDao});
 
-describe('Handler to getAll resource', function() {
+describe('Handler to return http resource for GET requests', function() {
 
     var httpHeaders = {
         'Content-Type': 'application/json;charset=UTF-8'

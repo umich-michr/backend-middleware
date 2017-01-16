@@ -1,13 +1,13 @@
 var Handler = require('./main.handler');
 var helpers = require('./helper');
 var ResourceDatabase = require('./resource.database');
-var ResourceParameterMapper = require('./handlers/resource.parameter.mapper');
+var ResourceUrlParameterMapper = require('./handlers/resource.parameter.mapper');
 
 var Middleware = function(config){
-    var resourceParameterMapper = new ResourceParameterMapper(config.resourceAttributeUrlParameterMap);
-    var handler = new Handler(config.routes,config.handlers, resourceParameterMapper, config.urlParameterDateFormat);
+    var resourceUrlParameterMapper = new ResourceUrlParameterMapper(config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
+    var handler = new Handler(config.routes,config.handlers, resourceUrlParameterMapper, config.urlParameterDateFormat);
 
-    var resourceDatabase = new ResourceDatabase(config.dataFilePath);
+    var resourceDatabase = new ResourceDatabase(config.dataFiles.path, config.dataFiles.extension);
     resourceDatabase.start();
 
     var writeHeaders = function(statusCode, headers, res){

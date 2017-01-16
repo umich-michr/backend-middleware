@@ -35,6 +35,49 @@ function HelperFunctions(){
         return dataFileNames;
     };
 
+    this.absolutePath = function(pathRelativeToProjectRoot){
+        var projectPath = require('path').dirname(__dirname);
+        projectPath = (projectPath.lastIndexOf('/')===projectPath.length?projectPath:projectPath+'/');
+
+        var normalizedRelativePath = (pathRelativeToProjectRoot||'./')
+            //replace more than 2 dots with 2 dots
+            .replace(/\.{3,}/g,'..')
+            //replace more than 1 slashes with 1 slash
+            .replace(/\/{2,}/g,'/')
+            //remove the "/." characters pnly if they are followed by "/" or remove the "/." at the end of the string
+            .replace(/\/\.(?=\/)|\/\.$/g,'')
+             //remove the preceding ".", "./" or "/" characters
+            .replace(/^(\.\/|\/|\.$)/,'');
+
+        return projectPath+normalizedRelativePath;
+    };
+
+    this.readFilesToMap = function (path,fileExtensionToUse){
+        var expressionToStripFileNameExtension = fileExtensionToUse?new RegExp('^.*(?='+fileExtensionToUse+'$)'):new RegExp();
+        var absolutePath = this.absolutePath(path);
+
+        var fileNames = fs.readdirSync(absolutePath);
+
+        var objectMap = {};
+
+        fileNames.forEach(function(fileName){
+            var qualifiedDataFileName = absolutePath +'/' + fileName;
+
+            var resourceNameMatch = fileName.match(expressionToStripFileNameExtension);
+
+            if(resourceNameMatch && resourceNameMatch[0]){
+                var resourceName = resourceNameMatch;
+                try{
+                    objectMap[resourceName] = require(qualifiedDataFileName);
+                }
+                catch(e){
+                }
+            }
+        });
+
+        return objectMap;
+    };
+
 }
 
 module.exports = new HelperFunctions();

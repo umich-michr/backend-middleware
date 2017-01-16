@@ -1,0 +1,7 @@
+  {
+    "resourceId":"id",
+    "id":"id",
+    "dept-name":"name",
+    "company-name":"company.name",
+	"creation-date":"creationDate"
+  }
