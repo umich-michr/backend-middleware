@@ -4,8 +4,8 @@ var ResourceDatabase = require('./resource.database');
 var ResourceUrlParameterMapper = require('./handlers/resource.parameter.mapper');
 
 var Middleware = function(config){
-    var resourceUrlParameterMapper = new ResourceUrlParameterMapper(config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
-    var handler = new Handler(config.routes,config.handlers, resourceUrlParameterMapper, config.urlParameterDateFormat);
+    var resourceUrlParameterMapper = new ResourceUrlParameterMapper(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
+    var handler = new Handler(config.routes,config.handlers, resourceUrlParameterMapper);
 
     var resourceDatabase = new ResourceDatabase(config.dataFiles.path, config.dataFiles.extension);
     resourceDatabase.start();

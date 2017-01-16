@@ -5,18 +5,22 @@ var fs = require('fs');
 function HelperFunctions(){
     this.defaultDateFormat = 'YYYY-MM-DDThh.mm.ss.sss';
 
-    this.castToParamValue = function(value,dateFormatForDateValues){
-        var dateFormat = dateFormatForDateValues||this.defaultDateFormat;
-        var dateValue = moment(value, dateFormat);
-        if(!isNaN(value)){
-            return Number(value);
+    this.castToParamValue = function(value, dataType,dateFormatForDateValues){
+        if(_.isArray(value)) {
+            var resultArray = [];
+            for(var i=0; i<value.length; i++) {
+                resultArray.push(this.castToParamValue(value[i], dataType, dateFormatForDateValues));
+            }
+            return resultArray;
         }
-        else if(dateValue.isValid()){
-            return dateValue;
-        }
-
-        else{
-            return value;
+        switch(dataType) {
+            case 'numeric':
+                return Number(value);
+            case 'date':
+                var dateFormat = dateFormatForDateValues||this.defaultDateFormat;
+                return moment(value, dateFormat);
+            default:
+                return value;
         }
     };
 

@@ -7,6 +7,7 @@ var config = {
     handlers: {resource:' resourceGetter'},
     urlParameterDateFormat: 'YYYY-MM-DD',
     resourceAttributeUrlParameterMap:{resourceId:'id'},
+
     dataFiles: {
         path:'./data',
         extension: '.json'
@@ -22,11 +23,10 @@ var mockedResourceDatabaseConstructor = sinon.stub().returns(mockedResourceDatab
 var mockedResourceParameterMapper = {toResourceDaoQueryObject:function(){}};
 var MockedResourceParameterMapper = sinon.stub().returns(mockedResourceParameterMapper);
 
-var handler = function(routes, handlers, resourceParameterMapper, dateFormat) {
+var handler = function(routes, handlers, resourceParameterMapper) {
     assert.equal(config.routes,routes);
     assert.equal(config.handlers,handlers);
     assert.equal(mockedResourceParameterMapper,resourceParameterMapper);
-    assert.equal(config.urlParameterDateFormat,dateFormat);
 };
 
 var createMiddleWareConstructor = function(mockHandler){
@@ -42,7 +42,7 @@ describe('Middleware function should process requests', function() {
     afterEach(function(){
         assert.isTrue(mockedResourceDatabaseConstructor.calledWith(config.dataFiles.path,config.dataFiles.extension));
         assert.isTrue(mockedResourceDatabase.start.called);
-        assert.isTrue(MockedResourceParameterMapper.calledWithExactly(config.resourceUrlParamMapFiles.path,config.resourceUrlParamMapFiles.extension));
+        assert.isTrue(MockedResourceParameterMapper.calledWithExactly(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path,config.resourceUrlParamMapFiles.extension));
     });
 
     it('testMiddleWare(Object config) - No handler matching request url', function() {

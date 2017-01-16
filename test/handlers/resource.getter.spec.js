@@ -32,7 +32,13 @@ describe('Handler to return http resource for GET requests', function() {
     it('testResourceGetter(String resourceName) - should return http response with resource corresponding to resource name', function() {
         var resourceName = 'people';
 
-        var response = resourceGetter({resourceName: resourceName});
+        var resourceParamMapper = {
+            toResourceDaoQueryObject:function(urlParams){
+                return null
+            }
+        };
+
+        var response = resourceGetter({resourceName: resourceName}, resourceParamMapper);
 
         var expected = new HttpResponse(200,httpHeaders,people);
 
