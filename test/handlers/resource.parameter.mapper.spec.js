@@ -12,7 +12,7 @@ describe('Maps the query string and url parameters for a given resource to JSON 
 		resourceParameterMapper = new ResourceParameterMapper(path);
     });
 
-    it('constructor(String path, String extension) - read the resource url param map files and store them', function() {
+    it.only('constructor(String path, String extension) - read the resource url param map files and store them', function() {
 
         assert.equal(2,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
         assert.equal(3,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);

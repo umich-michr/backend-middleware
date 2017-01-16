@@ -59,14 +59,14 @@ function HelperFunctions(){
         var fileNames = fs.readdirSync(absolutePath);
 
         var objectMap = {};
-
+		
         fileNames.forEach(function(fileName){
             var qualifiedDataFileName = absolutePath +'/' + fileName;
 
             var resourceNameMatch = fileName.match(expressionToStripFileNameExtension);
 
             if(resourceNameMatch && resourceNameMatch[0]){
-                var resourceName = resourceNameMatch;
+                var resourceName = resourceNameMatch[0];
                 try{
                     objectMap[resourceName] = require(qualifiedDataFileName);
                 }

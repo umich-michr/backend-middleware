@@ -1,7 +1,22 @@
   {
-    "resourceId":"id",
-    "id":"id",
-    "dept-name":"name",
-    "company-name":"company.name",
-	"creation-date":"creationDate"
+  	"resourceId":{
+  		"attribute":"id",
+  		"key": true,
+  		"type": "numeric"
+  	},
+    "id":{
+		"attribute":"id",
+		"key": true,
+		"type": "numeric"
+	},
+    "dept-name":{
+		"attribute":"name"
+	},
+    "company-name":{
+		"attribute":"company.name"
+	},
+	"creation-date":{
+		"attribute":"creationDate",
+		"type": "date"
+	}
   }
