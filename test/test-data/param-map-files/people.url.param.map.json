@@ -11,6 +11,14 @@
 	},
     "first-name":{
 		"attribute":"firstName"
-	}
+	},
+    "dob":{
+        "attribute":"dob",
+        "type":"date"
+    },
+    "parent-dob":{
+        "attribute":"parent.dob",
+        "type":"date"
+    }
 }
   

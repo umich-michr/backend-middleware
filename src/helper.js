@@ -82,6 +82,67 @@ function HelperFunctions(){
         return objectMap;
     };
 
+    this.setValue=function(attributeSelectorString, object, value){
+            var atrributeArray = attributeSelectorString.split('.');
+
+            var setObjValue = function (arr, obj) {
+                if (arr.length === 1) {
+                    obj[arr[0]]=value;
+                    return;
+                }
+                var firstAttribute = arr.shift();
+                var objFirstKeyValue = obj[firstAttribute];
+                if(!objFirstKeyValue || (!_.isObject(objFirstKeyValue)&&!_.isArray(objFirstKeyValue))){
+                    obj[firstAttribute]={};
+                }
+                setObjValue(arr, obj[firstAttribute]);
+            };
+
+            setObjValue(atrributeArray, object);
+    };
+
+    this.getValue=function(attributeSelectorString, object){
+
+        var atrributeArray = attributeSelectorString.split('.');
+
+        var getObjValue = function (arr, obj) {
+            if (arr.length === 1) {
+                return obj[arr[0]];
+            }
+            var firstAttribute = arr.shift();
+            if(!obj[firstAttribute]){
+                return;
+            }
+            return getObjValue(arr, obj[firstAttribute]);
+        };
+
+        return getObjValue(atrributeArray, object);
+    };
+
+    this.isDate = function(object){
+        return (object instanceof moment && object.isValid());
+    };
+
+    this.sortParamValueArray=function(array){
+        if(array && array.length!=0){
+            if(this.isDate(array[0])){
+                var compare = function(a, b) {
+                    if (a.isBefore(b)) {
+                        return -1;
+                    }
+                    if (a.isAfter(b)) {
+                        return 1;
+                    }
+                    return 0;
+                };
+                array.sort(compare);
+            }
+            else{
+                return array.sort();
+            }
+        }
+        return array;
+    };
 }
 
 module.exports = new HelperFunctions();

@@ -16,7 +16,7 @@ var resourceDao = {
             return people;
         }
         if(resourceName==='people' && daoResourceQueryObject.id==1){
-            return people[0];
+            return [people[0]];
         }
     }
 };
@@ -34,7 +34,10 @@ describe('Handler to return http resource for GET requests', function() {
 
         var resourceParamMapper = {
             toResourceDaoQueryObject:function(urlParams){
-                return null
+                return null;
+            },
+            isQueryById: function() {
+                return false;
             }
         };
 
@@ -50,6 +53,9 @@ describe('Handler to return http resource for GET requests', function() {
         var resourceParamMapper = {
             toResourceDaoQueryObject:function(urlParams){
                 return {id:1};
+            },
+            isQueryById: function() {
+                return true;
             }
         };
 

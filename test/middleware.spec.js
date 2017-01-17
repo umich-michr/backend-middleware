@@ -40,7 +40,7 @@ var createMiddleWareConstructor = function(mockHandler){
 describe('Middleware function should process requests', function() {
 
     afterEach(function(){
-        assert.isTrue(mockedResourceDatabaseConstructor.calledWith(config.dataFiles.path,config.dataFiles.extension));
+        assert.isTrue(mockedResourceDatabaseConstructor.calledWith(mockedResourceParameterMapper, config.dataFiles.path,config.dataFiles.extension));
         assert.isTrue(mockedResourceDatabase.start.called);
         assert.isTrue(MockedResourceParameterMapper.calledWithExactly(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path,config.resourceUrlParamMapFiles.extension));
     });

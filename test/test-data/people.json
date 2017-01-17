@@ -2,16 +2,22 @@
   {
     "id":1,
     "firstName":"John",
-    "lastName":"Doe"
+    "lastName":"Doe",
+    "dob":"01/01/1980"
   },
   {
     "id":3,
     "firstName":"Jane",
-    "lastName":"McCormick"
+    "lastName":"McCormick",
+    "dob":"12/31/1980"
   },
   {
     "id":2,
     "firstName":"Jack",
-    "lastName":"Jameson"
+    "lastName":"Jameson",
+    "dob":"11/10/1960",
+    "parent":{
+      "dob":"11/10/1930"
+    }
   }
 ]

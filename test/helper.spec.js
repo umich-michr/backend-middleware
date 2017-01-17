@@ -3,12 +3,12 @@ var moment = require('moment');
 var sinon = require('sinon');
 
 var helperFunctions = require('../src/helper');
-var defaultDateFormat = 'YYYY-MM-DDThh.mm.ss.sss';
+var defaultDateFormat = 'MM-DD-YYYY';
 
 describe('Helper functions used to do boring things such as parsing values, slicing dicing strings etc.', function() {
     it('testCastToParamValue(date) - should parse a string matching a date format to date', function() {
         var value ='2017-01-05T00.00.00.000';
-        var expected = moment(value,defaultDateFormat);
+        var expected = moment(value,helperFunctions.defaultDateFormat);
 
         var actual = helperFunctions.castToParamValue(value, 'date');
 
@@ -89,4 +89,89 @@ describe('Helper functions used to do boring things such as parsing values, slic
 
         assert.equal(0,Object.keys(actual).length,'There are no files that could be used by node require statement in the path provided so should have returned an empty object');
     });
+
+    it('testSetValue(String attrSelector, Object object, Object value) - should set the value of object attribute using dot"." notation to access the keys of the object', function() {
+        var attrSelector='a.b.c';
+        var value = {d:5};
+
+        var objWithSelectedAttribute = {a:{b:{c:1}}};
+        var objWithoutSelectedAttribute = {x:1};
+        var objWithDifferentSelectedAttribute = {a:1};
+
+        helperFunctions.setValue(attrSelector,objWithSelectedAttribute,value);
+
+        assert.deepEqual(objWithSelectedAttribute,{a:{b:{c:value}}});
+
+        helperFunctions.setValue(attrSelector,objWithoutSelectedAttribute,value);
+
+        assert.deepEqual(objWithoutSelectedAttribute, {x:1,a:{b:{c:value}}});
+
+        helperFunctions.setValue(attrSelector,objWithDifferentSelectedAttribute,value);
+
+        assert.deepEqual(objWithDifferentSelectedAttribute,{a:{b:{c:value}}});
+
+        var attrSelector='a';
+        var simpleObject ={};
+
+        helperFunctions.setValue(attrSelector,simpleObject,5);
+
+        assert.deepEqual(simpleObject,{a:5});
+    });
+
+    it('testGetValue(String attrSelector, Object object) - should get the value of object attribute using dot"." notation to access the keys of the object', function() {
+
+        var object = {a:{b:{c:1}}};
+
+        var actual = helperFunctions.getValue('a.b.c',object);
+
+        assert.equal(actual,1);
+
+        actual = helperFunctions.getValue('a.b',object);
+
+        assert.deepEqual(actual,{c:1});
+
+        actual = helperFunctions.getValue('x.b',object);
+
+        assert.isUndefined(actual);
+    });
+
+    it('testIsDate(object) - should return if the input is of date type', function() {
+        assert.isFalse(helperFunctions.isDate());
+        assert.isFalse(helperFunctions.isDate(null));
+        assert.isFalse(helperFunctions.isDate({}));
+        assert.isFalse(helperFunctions.isDate(1));
+        assert.isFalse(helperFunctions.isDate('a'));
+
+        assert.isTrue(helperFunctions.isDate(moment('01-13-1980',defaultDateFormat)));
+    });
+
+    it('testSortParamValueArray(Array array) - should sort the array in ascending order taking date objects into consideration', function() {
+
+        actual = helperFunctions.sortParamValueArray();
+
+        assert.isUndefined(actual);
+
+        actual = helperFunctions.sortParamValueArray([]);
+
+        assert.deepEqual(actual,[]);
+
+        var numberArray = [3,5,2,4,1];
+
+        var actual = helperFunctions.sortParamValueArray(numberArray);
+
+        assert.deepEqual(actual,[1,2,3,4,5]);
+
+        var stringArray = ['jason','John','Jason'];
+
+        actual = helperFunctions.sortParamValueArray(stringArray);
+
+        assert.deepEqual(actual,['Jason', 'John', 'jason']);
+
+        var dateArray = [moment('01-12-1981',defaultDateFormat),moment('01-13-1980',defaultDateFormat),moment('01-12-1980',defaultDateFormat)];
+
+        actual = helperFunctions.sortParamValueArray(dateArray);
+
+        assert.deepEqual(actual,[moment('01-12-1980',defaultDateFormat),moment('01-13-1980',defaultDateFormat),moment('01-12-1981',defaultDateFormat)]);
+    });
+
 });

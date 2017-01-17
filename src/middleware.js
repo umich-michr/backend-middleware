@@ -7,7 +7,7 @@ var Middleware = function(config){
     var resourceUrlParameterMapper = new ResourceUrlParameterMapper(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
     var handler = new Handler(config.routes,config.handlers, resourceUrlParameterMapper);
 
-    var resourceDatabase = new ResourceDatabase(config.dataFiles.path, config.dataFiles.extension);
+    var resourceDatabase = new ResourceDatabase(resourceUrlParameterMapper, config.dataFiles.path, config.dataFiles.extension);
     resourceDatabase.start();
 
     var writeHeaders = function(statusCode, headers, res){

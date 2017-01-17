@@ -13,15 +13,15 @@ describe('Maps the query string and url parameters for a given resource to JSON 
 
         var resourceParameterMapper = new ResourceParameterMapper(dateFormat, path);
 
-        assert.equal(2,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
-        assert.equal(3,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
-        assert.equal(5,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
+	    assert.equal(2,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
+	    assert.equal(5,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
+	    assert.equal(5,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
 
         //Test file extension configuration with existing files
         resourceParameterMapper = new ResourceParameterMapper(dateFormat, path,'.url.param.map.json');
 
         assert.equal(2,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
-        assert.equal(3,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
+        assert.equal(5,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
         assert.equal(5,Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
 
         //Test file extension configuration with non existing files
@@ -45,10 +45,9 @@ describe('Maps the query string and url parameters for a given resource to JSON 
 		var expected = {
 				"id":1,
 				"name":"HR",
-				"company":{"name":"MICHR"},
-				"creationDate":[moment("2017-01-13T00.00.00.000", "YYYY-MM-DDThh.mm.ss.sss"),moment("2017-01-26T23.59.59.999", "YYYY-MM-DDThh.mm.ss.sss")],
-
-		};
+				"company.name":"MICHR",
+				"creationDate":[moment("2017-01-13T00.00.00.000", "YYYY-MM-DDThh.mm.ss.sss"),moment("2017-01-26T23.59.59.999", "YYYY-MM-DDThh.mm.ss.sss")]
+			};
 		
 		var actual = resourceParameterMapper.toResourceDaoQueryObject(urlParametersObject.resourceName, urlParametersObject);
 		

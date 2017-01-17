@@ -4,8 +4,12 @@ var HttpResponse = require('./http.response');
 var resourceGetter = function(urlParameters, parameterMapper) {
     var resourceName = urlParameters.resourceName;
 
-    var daoResourceQueryObject = parameterMapper.toResourceDaoQueryObject(resourceName, urlParameters);
-    var resource = resourceDao.get(resourceName, daoResourceQueryObject);
+    var daoQueryObject = parameterMapper.toResourceDaoQueryObject(resourceName, urlParameters);
+    var resource = resourceDao.get(resourceName, daoQueryObject);
+
+    if(parameterMapper.isQueryById(resourceName, urlParameters)){
+        resource=resource[0];
+    }
 
     var httpHeaders = {
         'Content-Type': 'application/json;charset=UTF-8'
