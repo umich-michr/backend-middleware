@@ -1,24 +1,23 @@
 {
-	"resourceId":{
-		"attribute":"id",
-		"key": true,
-		"type": "numeric"
-	},
-	"id":{
-		"attribute":"id",
-		"key": true,
-		"type": "numeric"
-	},
-    "first-name":{
-		"attribute":"firstName"
-	},
-    "dob":{
-        "attribute":"dob",
-        "type":"date"
+    "resourceId": {
+        "attribute": "id",
+        "key": true,
+        "type": "numeric"
     },
-    "parent-dob":{
-        "attribute":"parent.dob",
-        "type":"date"
+    "id": {
+        "attribute": "id",
+        "key": true,
+        "type": "numeric"
+    },
+    "first-name": {
+        "attribute": "firstName"
+    },
+    "dob": {
+        "attribute": "dob",
+        "type": "date"
+    },
+    "parent-dob": {
+        "attribute": "parent.dob",
+        "type": "date"
     }
 }
-  

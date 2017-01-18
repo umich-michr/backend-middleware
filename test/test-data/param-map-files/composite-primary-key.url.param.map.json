@@ -1,0 +1,18 @@
+{
+    "a": {
+        "attribute": "id1",
+        "key": true
+    },
+    "b": {
+        "attribute": "id2",
+        "key": true
+    },
+    "c": {
+        "attribute": "id3",
+        "key": true
+    },
+    "d": {
+        "attribute": "id4",
+        "type": "numeric"
+    }
+}

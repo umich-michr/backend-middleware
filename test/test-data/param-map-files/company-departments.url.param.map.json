@@ -1,22 +1,22 @@
-  {
-  	"resourceId":{
-  		"attribute":"id",
-  		"key": true,
-  		"type": "numeric"
-  	},
-    "id":{
-		"attribute":"id",
-		"key": true,
-		"type": "numeric"
-	},
-    "dept-name":{
-		"attribute":"name"
-	},
-    "company-name":{
-		"attribute":"company.name"
-	},
-	"creation-date":{
-		"attribute":"creationDate",
-		"type": "date"
-	}
-  }
+{
+    "resourceId": {
+        "attribute": "id",
+        "key": true,
+        "type": "numeric"
+    },
+    "id": {
+        "attribute": "id",
+        "key": true,
+        "type": "numeric"
+    },
+    "dept-name": {
+        "attribute": "name"
+    },
+    "company-name": {
+        "attribute": "company.name"
+    },
+    "creation-date": {
+        "attribute": "creationDate",
+        "type": "date"
+    }
+}

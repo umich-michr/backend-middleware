@@ -1,50 +1,62 @@
 var assert = require('chai').assert;
 var moment = require('moment');
-var sinon = require('sinon');
 
 var resourceDao = require('../../src/daos/resource.dao');
-var dateFormat ='MM/DD/YYYY';
-var people = [{
+var dateFormat = 'MM/DD/YYYY';
+var people = [
+    {
         id: 1,
         firstName: 'John',
         lastName: 'Doe',
-        company: {name: 'APPLE'},
-        dob: moment('01/01/1980',dateFormat)
+        company: {
+            name: 'APPLE'
+        },
+        dob: moment('01/01/1980', dateFormat)
     },
     {
         id: 2,
         firstName: 'Jane',
         lastName: 'Doe',
-        company: {name: 'APPLE'},
-        dob: moment('05/01/1980',dateFormat)
+        company: {
+            name: 'APPLE'
+        },
+        dob: moment('05/01/1980', dateFormat)
     },
     {
         id: 3,
         firstName: 'Mike',
         lastName: 'Myer',
-        company: {name: 'GM'},
-        dob: moment('12/31/1970',dateFormat)
+        company: {
+            name: 'GM'
+        },
+        dob: moment('12/31/1970', dateFormat)
     },
     {
         id: 4,
         firstName: 'Macy',
         lastName: 'Myer',
-        company: {name: 'GM'},
-        dob: moment('08/12/1990',dateFormat)
+        company: {
+            name: 'GM'
+        },
+        dob: moment('08/12/1990', dateFormat)
     },
     {
         id: 5,
         firstName: 'Jason',
         lastName: 'Tyson',
-        company: {name: 'TESLA'},
-        dob: moment('11/01/1985',dateFormat)
+        company: {
+            name: 'TESLA'
+        },
+        dob: moment('11/01/1985', dateFormat)
     },
     {
         id: 6,
         firstName: 'Freddy',
         lastName: 'Sickmyer',
-        company: {name: 'APPLE'},
-        dob: moment('01/01/1980',dateFormat)
+        company: {
+            name: 'APPLE'
+        },
+        dob: moment('01/01/1980', dateFormat)
     }
 ];
 var globalDB = global.DATABASE;
@@ -82,7 +94,7 @@ describe('DAO to query resources in the in-memory JSON object db', function () {
             'firstName': 'Jason',
             'lastName': 'Tyson',
             'company.name': 'TESLA',
-            'dob': moment('11/01/1985',dateFormat)
+            'dob': moment('11/01/1985', dateFormat)
         };
 
         var expected = [people[4]];
@@ -107,17 +119,19 @@ describe('DAO to query resources in the in-memory JSON object db', function () {
         var multiValueQuery = {
             'lastName': ['Myer', 'Tyson', 'Doe'],
             'company.name': ['GM', 'TESLA', 'APPLE'],
-            'dob': [moment('12/31/1970',dateFormat), moment('11/01/1985',dateFormat)],
+            'dob': [moment('12/31/1970', dateFormat), moment('11/01/1985', dateFormat)],
             'id': [1, 2, 3, 4, 5]
         };
 
-        var expected = [people[0],people[1],people[2], people[4]];
+        var expected = [people[0], people[1], people[2], people[4]];
 
         var actual = resourceDao.get(resourceName, multiValueQuery);
 
         assert.deepEqual(actual, expected, 'Multi value query did not return the correct set of people');
 
-        actual = resourceDao.get(resourceName, {firstName: 'akjjsdsf'});
+        actual = resourceDao.get(resourceName, {
+            firstName: 'akjjsdsf'
+        });
 
         assert.deepEqual(actual, [], 'Should have returned undefined when a valid query object does not correspond to existing object');
 
@@ -129,7 +143,7 @@ describe('DAO to query resources in the in-memory JSON object db', function () {
         var multiValueQuery = {
             'lastName': ['Myer', 'Tyson', 'Doe'],
             'company.name': ['GM', 'TESLA', 'APPLE'],
-            'dob': [moment('12/31/1970',dateFormat), moment('12/31/1970',dateFormat), moment('11/01/1985',dateFormat)],
+            'dob': [moment('12/31/1970', dateFormat), moment('12/31/1970', dateFormat), moment('11/01/1985', dateFormat)],
             'id': [1, 2, 3, 4, 5]
         };
 
@@ -167,7 +181,7 @@ describe('DAO to query resources in the in-memory JSON object db', function () {
             firstName: 'John'
         };
 
-        var expected = [people[0]];
+        expected = [people[0]];
 
         actual = resourceDao.get(resourceName, idQuery);
 

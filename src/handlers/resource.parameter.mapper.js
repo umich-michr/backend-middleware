@@ -5,22 +5,22 @@ module.exports = function (urlParameterDateFormat, urlParamMapFilePath, urlParam
     this.RESOURCE_URL_PARAM_MAP = helpers.readFilesToMap(urlParamMapFilePath, urlParamFileExtension || '.url.param.map.json');
     this.urlParameterDateFormat = urlParameterDateFormat || helpers.defaultDateFormat;
 
-    this.isQueryById = function (resourceName, urlParametersObject){
+    this.isQueryById = function (resourceName, urlParametersObject) {
         var resourceUrlParamMap = this.RESOURCE_URL_PARAM_MAP[resourceName];
 
-        if(!resourceUrlParamMap) {
+        if (!resourceUrlParamMap) {
             return false;
         }
 
         var hasKey;
-        for(var resourceUrlParamKey in resourceUrlParamMap) {
+        for (var resourceUrlParamKey in resourceUrlParamMap) {
             var resourceUrlParam = resourceUrlParamMap[resourceUrlParamKey];
-            if(!resourceUrlParam || !resourceUrlParam.key) {
+            if (!resourceUrlParam || !resourceUrlParam.key) {
                 continue;
             }
 
             hasKey = true;
-            if(!urlParametersObject[resourceUrlParamKey]) {
+            if (!urlParametersObject[resourceUrlParamKey]) {
                 return false;
             }
         }
@@ -32,13 +32,13 @@ module.exports = function (urlParameterDateFormat, urlParamMapFilePath, urlParam
         var resourceDaoQueryObject = {};
         var resourceUrlParamMap = this.RESOURCE_URL_PARAM_MAP[resourceName];
 
-        if(!resourceUrlParamMap){
+        if (!resourceUrlParamMap) {
             return;
         }
 
         for (var queryParam in urlParametersObject) {
 
-            if(!resourceUrlParamMap[queryParam]) {
+            if (!resourceUrlParamMap[queryParam]) {
                 continue;
             }
 
@@ -47,11 +47,10 @@ module.exports = function (urlParameterDateFormat, urlParamMapFilePath, urlParam
 
             if (attributeSelector) {
                 var queryValue = helpers.castToParamValue(urlParametersObject[queryParam], resourceAttributeUrlParameterValueType, this.urlParameterDateFormat);
-                resourceDaoQueryObject[attributeSelector]=queryValue;
+                resourceDaoQueryObject[attributeSelector] = queryValue;
             }
         }
 
         return resourceDaoQueryObject;
     };
 };
-

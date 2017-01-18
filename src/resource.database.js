@@ -21,7 +21,7 @@ module.exports = function (resourceUrlParameterMapper, dataFilePath, dataFileExt
         }
     };
 
-    var castResourceValuesUsingParamAttributeMap = function(urlParamAttributeMap,resource, dateFormat){
+    var castResourceValuesUsingParamAttributeMap = function (urlParamAttributeMap, resource, dateFormat) {
         for (var key in urlParamAttributeMap) {
             var mapping = urlParamAttributeMap[key];
 
@@ -29,10 +29,10 @@ module.exports = function (resourceUrlParameterMapper, dataFilePath, dataFileExt
                 continue;
             }
 
-            var resourceAttributeValue = helpers.getValue(mapping.attribute,resource);
-            if (resourceAttributeValue){
-                var dateValue = moment(resourceAttributeValue,dateFormat);
-                helpers.setValue(mapping.attribute,resource,dateValue);
+            var resourceAttributeValue = helpers.getValue(mapping.attribute, resource);
+            if (resourceAttributeValue) {
+                var dateValue = moment(resourceAttributeValue, dateFormat);
+                helpers.setValue(mapping.attribute, resource, dateValue);
             }
         }
     };

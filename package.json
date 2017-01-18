@@ -1,54 +1,58 @@
 {
-  "name": "backend-middleware",
-  "version": "16.01.05",
-  "description": "The nodejs server middleware that serves json documents as http resources for user-defined or restful urls. Helps with developing web application html/js clients that will communicate with a backend serving the data user interface needs by mocking the backend.",
-  "main": "middleware.js",
-  "scripts": {
-    "test": "./node_modules/mocha/bin/mocha ./test/**",
-    "test:watch": "./node_modules/mocha/bin/mocha -w ./test/**"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/michr-cri/backend-middleware.git"
-  },
-  "keywords": [
-    "backend",
-    "middleware",
-    "backend-middleware",
-    "mock-backend",
-    "backend",
-    "mock-data",
-    "backend-data"
-  ],
-  "author": {
-    "name": "Michigan Institute for Clinical & Health Research",
-    "url": "https://www.michr.umich.edu"
-  },
-  "contributors": [
-    {
-      "name": "Melih Gunal"
+    "name": "backend-middleware",
+    "version": "16.01.05",
+    "description": "The nodejs server middleware that serves json documents as http resources for user-defined or restful urls. Helps with developing web application html/js clients that will communicate with a backend serving the data user interface needs by mocking the backend.",
+    "main": "middleware.js",
+    "scripts": {
+        "test": "./node_modules/mocha/bin/mocha --recursive ./test/**",
+        "test:watch": "./node_modules/mocha/bin/mocha -w --recursive ./test/**"
     },
-    {
-      "name": "Raden Tonev"
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/michr-cri/backend-middleware.git"
     },
-    {
-      "name": "Tianyun Zhang"
+    "keywords": [
+        "backend",
+        "middleware",
+        "backend-middleware",
+        "mock-backend",
+        "backend",
+        "mock-data",
+        "backend-data"
+    ],
+    "author": {
+        "name": "Michigan Institute for Clinical & Health Research",
+        "url": "https://www.michr.umich.edu"
+    },
+    "contributors": [{
+            "name": "Melih Gunal"
+        },
+        {
+            "name": "Raden Tonev"
+        },
+        {
+            "name": "Tianyun Zhang"
+        }
+    ],
+    "license": "SEE LICENSE IN LICENSE",
+    "bugs": {
+        "url": "https://github.com/michr-cri/backend-middleware/issues"
+    },
+    "homepage": "https://github.com/michr-cri/backend-middleware#readme",
+    "devDependencies": {
+        "chai": "3.5.0",
+        "eslint": "3.13.1",
+        "eslint-config-standard": "6.2.1",
+        "eslint-plugin-promise": "3.4.0",
+        "eslint-plugin-standard": "2.0.1",
+        "mocha": "3.2.0",
+        "proxyquire": "^1.7.10",
+        "sinon": "^1.17.7"
+    },
+    "dependencies": {
+        "eslint": "3.13.1",
+        "moment": "^2.17.1",
+        "underscore": "^1.8.3",
+        "uniloc-michr-fork": "^0.3.2"
     }
-  ],
-  "license": "SEE LICENSE IN LICENSE",
-  "bugs": {
-    "url": "https://github.com/michr-cri/backend-middleware/issues"
-  },
-  "homepage": "https://github.com/michr-cri/backend-middleware#readme",
-  "devDependencies": {
-    "chai": "3.5.0",
-    "mocha": "3.2.0",
-    "proxyquire": "^1.7.10",
-    "sinon": "^1.17.7"
-  },
-  "dependencies": {
-    "moment": "^2.17.1",
-    "underscore": "^1.8.3",
-    "uniloc-michr-fork": "^0.3.2"
-  }
 }

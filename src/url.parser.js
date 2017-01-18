@@ -3,35 +3,35 @@ var _ = require('underscore');
 
 function UrlParser(queryStringParamObjectAttributeMap, paramValueDateFormat) {
 
-    this.paramValueDateFormat = paramValueDateFormat||helperFunctions.defaultDateFormat;
+    this.paramValueDateFormat = paramValueDateFormat || helperFunctions.defaultDateFormat;
 
-    this.queryStringToDaoParameter = function(resourceName,queryString) {
+    this.queryStringToDaoParameter = function (resourceName, queryString) {
         var queryStringKeyValues = this.extractQueryStringParameters(queryString);
 
         var queryParamObject = {};
 
-        for(var queryStringKeyValuesIndex=0; queryStringKeyValuesIndex<queryStringKeyValues.length;queryStringKeyValuesIndex++) {
+        for (var queryStringKeyValuesIndex = 0; queryStringKeyValuesIndex < queryStringKeyValues.length; queryStringKeyValuesIndex++) {
             var keyValuePair = queryStringKeyValues[queryStringKeyValuesIndex];
 
             var objectKey = parseQueryParamName(resourceName, keyValuePair[0]);
             var objectValue = keyValuePair[1];
 
-            updateQueryParamObjectValue(queryParamObject,objectKey,objectValue);
+            updateQueryParamObjectValue(queryParamObject, objectKey, objectValue);
         }
 
         return queryParamObject;
 
     };
 
-    var parseQueryParamName = function(resourceName, paramName){
+    var parseQueryParamName = function (resourceName, paramName) {
         var key = queryStringParamObjectAttributeMap[resourceName][paramName];
-        return key?key:paramName;
+        return key ? key : paramName;
     };
 
-    var updateQueryParamObjectValue = function(queryParamObject, key, value){
+    var updateQueryParamObjectValue = function (queryParamObject, key, value) {
         var existingObjectKeyValue = queryParamObject[key];
-        if(existingObjectKeyValue) {
-            if(_.isArray(existingObjectKeyValue)) {
+        if (existingObjectKeyValue) {
+            if (_.isArray(existingObjectKeyValue)) {
                 existingObjectKeyValue.push(value);
             }
             else {
@@ -43,22 +43,11 @@ function UrlParser(queryStringParamObjectAttributeMap, paramValueDateFormat) {
         }
     };
 
-    /*this.extractResourceName = function(url, httpMethod){
-        var httpMethod = httpMethod||requestType.GET;
-        var urlComponents = url.split(/[\/\?]/).filter(Boolean);
-
-        var handlerUrlTemplateNames = httpMethodHandlerMap[httpMethod];
-
-        for(var templateNamesIndex=0; templateNamesIndex<handlerUrlTemplateNames.length; templateNamesIndex++) {
-
-        }
-    };*/
-
-    this.extractQueryStringParameters = function(queryString) {
+    this.extractQueryStringParameters = function (queryString) {
         var keyValuePairStrings = queryString.split('&');
         var keyValuePairs = [];
 
-        for(var keyValuePairIndex=0; keyValuePairIndex<keyValuePairStrings.length; keyValuePairIndex++){
+        for (var keyValuePairIndex = 0; keyValuePairIndex < keyValuePairStrings.length; keyValuePairIndex++) {
             var keyValuePair = keyValuePairStrings[keyValuePairIndex].split('=');
             keyValuePair[1] = helperFunctions.castToParamValue(keyValuePair[1], this.paramValueDateFormat);
             keyValuePairs.push(keyValuePair);
@@ -69,4 +58,3 @@ function UrlParser(queryStringParamObjectAttributeMap, paramValueDateFormat) {
 }
 
 module.exports = UrlParser;
-
