@@ -3,7 +3,7 @@ var helpers = require('./helper');
 var ResourceDatabase = require('./resource.database');
 var ResourceUrlParameterMapper = require('./handlers/resource.parameter.mapper');
 
-var Middleware = function (config) {
+var middleware = function (config) {
     var resourceUrlParameterMapper = new ResourceUrlParameterMapper(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
     var handler = new Handler(config.routes, config.handlers, resourceUrlParameterMapper);
 
@@ -30,8 +30,9 @@ var Middleware = function (config) {
         else {
             writeHeaders(response.statusCode, response.headers, res);
             res.write(response.body ? response.body : '');
+            res.end();
         }
     };
 };
 
-module.exports = Middleware;
+module.exports = middleware;

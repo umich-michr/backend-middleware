@@ -40,7 +40,7 @@ function HelperFunctions() {
     };
 
     this.absolutePath = function (pathRelativeToProjectRoot) {
-        var projectPath = require('path').dirname(__dirname);
+        var projectPath = require('path').dirname(__dirname).replace('/node_modules/backend-middleware','');
         projectPath = (projectPath.lastIndexOf('/') === projectPath.length ? projectPath : projectPath + '/');
 
         var normalizedRelativePath = (pathRelativeToProjectRoot || './')

@@ -9,11 +9,12 @@ var config = {
     handlers: {
         resource: ' resourceGetter'
     },
-    urlParameterDateFormat: 'YYYY-MM-DD',
+
     resourceAttributeUrlParameterMap: {
         resourceId: 'id'
     },
 
+    urlParameterDateFormat: 'YYYY-MM-DD',
     dataFiles: {
         path: './data',
         extension: '.json'
@@ -85,7 +86,8 @@ describe('Middleware function should process requests', function () {
         var nextSpy = sinon.spy();
         var res = {
             writeHead: function () {},
-            write: function () {}
+            write: function () {},
+            end: function () {}
         };
         sinon.stub(res);
 
@@ -95,6 +97,7 @@ describe('Middleware function should process requests', function () {
         assert.isTrue(res.write.calledWith({
             body: 'body'
         }));
+        assert.isTrue(res.end.called);
     });
 
     it('testMiddleWare(Object config) - Handler matching request without status code', function () {
@@ -116,7 +119,8 @@ describe('Middleware function should process requests', function () {
         var res = {
             writeHead: function () {},
             write: function () {},
-            setHeader: function () {}
+            setHeader: function () {},
+            end: function () {}
         };
         sinon.stub(res);
 
@@ -127,6 +131,7 @@ describe('Middleware function should process requests', function () {
         assert.isTrue(res.write.calledWith({
             body: 'body'
         }));
+        assert.isTrue(res.end.called);
     });
 
     it('testMiddleWare(Object config) - Handler matching request with status code and response headers', function () {
@@ -149,7 +154,8 @@ describe('Middleware function should process requests', function () {
         var res = {
             writeHead: function () {},
             write: function () {},
-            setHeader: function () {}
+            setHeader: function () {},
+            end: function () {}
         };
         sinon.stub(res);
 
@@ -160,6 +166,7 @@ describe('Middleware function should process requests', function () {
         assert.isTrue(res.write.calledWith({
             body: 'body'
         }));
+        assert.isTrue(res.end.called);
     });
 
     it('testMiddleWare(Object config) - Handler matching request without status code, response headers or body', function () {
@@ -174,7 +181,8 @@ describe('Middleware function should process requests', function () {
         var res = {
             writeHead: function () {},
             write: function () {},
-            setHeader: function () {}
+            setHeader: function () {},
+            end: function () {}
         };
         sinon.stub(res);
 
@@ -183,5 +191,6 @@ describe('Middleware function should process requests', function () {
         assert.isTrue(res.writeHead.notCalled);
         assert.isTrue(res.setHeader.notCalled);
         assert.isTrue(res.write.calledWith(''));
+        assert.isTrue(res.end.called);
     });
 });

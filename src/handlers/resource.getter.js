@@ -14,7 +14,7 @@ var resourceGetter = function (urlParameters, parameterMapper) {
     var httpHeaders = {
         'Content-Type': 'application/json;charset=UTF-8'
     };
-    var httpResponse = new HttpResponse(200, httpHeaders, resource);
+    var httpResponse = new HttpResponse(200, httpHeaders, JSON.stringify(resource));
 
     return httpResponse;
 };
