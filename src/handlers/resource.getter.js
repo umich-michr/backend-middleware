@@ -1,7 +1,7 @@
 var resourceDao = require('../daos/resource.dao');
 var HttpResponse = require('./http.response');
 
-var resourceGetter = function (handlerPayload, parameterMapper, resourceTransformerCallback) {
+var resourceGetter = function (handlerPayload, parameterMapper, responseTransformerCallback) {
 
     var urlParameters= handlerPayload.urlParameters;
 
@@ -14,15 +14,16 @@ var resourceGetter = function (handlerPayload, parameterMapper, resourceTransfor
         resource = resource[0];
     }
 
-    if(resourceTransformerCallback) {
-        var transformedResource = resourceTransformerCallback(resource, urlParameters);
-        resource = transformedResource ? transformedResource : resource;
-    }
-
     var httpHeaders = {
         'Content-Type': 'application/json;charset=UTF-8'
     };
-    var httpResponse = new HttpResponse(200, httpHeaders, JSON.stringify(resource));
+
+    var httpResponse = new HttpResponse(200, httpHeaders, JSON.stringify(resource), resourceName);
+
+    if(responseTransformerCallback) {
+        var transformedResponse = responseTransformerCallback(httpResponse, urlParameters);
+        httpResponse = transformedResponse ? transformedResponse : httpResponse;
+    }
 
     return httpResponse;
 };
