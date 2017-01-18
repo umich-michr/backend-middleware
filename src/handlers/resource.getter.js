@@ -1,7 +1,10 @@
 var resourceDao = require('../daos/resource.dao');
 var HttpResponse = require('./http.response');
 
-var resourceGetter = function (urlParameters, parameterMapper, resourceTransformerCallback) {
+var resourceGetter = function (handlerPayload, parameterMapper, resourceTransformerCallback) {
+
+    var urlParameters= handlerPayload.urlParameters;
+
     var resourceName = urlParameters.resourceName;
 
     var daoQueryObject = parameterMapper.toResourceDaoQueryObject(resourceName, urlParameters);

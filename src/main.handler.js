@@ -22,7 +22,8 @@ var Handler = function (routes, routeHandlers, parameterMapper, resourceTransorm
         if (handlerLookup && handlerLookup.name) {
             var requestHandler = this.routeHandlers[handlerLookup.name];
             if (requestHandler) {
-                return requestHandler(handlerLookup.options, parameterMapper, resourceTransormerCallback);
+                var handlerPayload = {request:request, urlParameters:handlerLookup.options};
+                return requestHandler(handlerPayload, parameterMapper, resourceTransormerCallback);
             }
         }
 

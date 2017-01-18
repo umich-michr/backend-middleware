@@ -43,7 +43,10 @@ describe('Handler to return http resource for GET requests', function () {
         };
 
         var response = resourceGetter({
-            resourceName: resourceName
+            request:{},
+            urlParameters:{
+                resourceName: resourceName
+            }
         }, resourceParamMapper);
 
         var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people));
@@ -64,10 +67,14 @@ describe('Handler to return http resource for GET requests', function () {
             }
         };
 
-        var response = resourceGetter({
-            resourceName: resourceName,
-            resourceId: 5
-        }, resourceParamMapper);
+        var response = resourceGetter(
+            {
+                request:{},
+                urlParameters:{
+                    resourceName: resourceName,
+                    resourceId: 5
+                }
+            }, resourceParamMapper);
 
         var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people[0]));
 
@@ -86,18 +93,23 @@ describe('Handler to return http resource for GET requests', function () {
             }
         };
 
-        var urlParamMapper = {
+        var urlParameters = {
             resourceName: resourceName,
             page: 'page'
         };
 
+        var handlerPayload = {
+            request: {},
+            urlParameters: urlParameters
+        };
+
         var transformedResource = {};
         var resourceTransformCallback = sinon.stub().returns(transformedResource);
-        var response = resourceGetter(urlParamMapper, resourceParamMapper, resourceTransformCallback);
+        var response = resourceGetter(handlerPayload, resourceParamMapper, resourceTransformCallback);
 
         var expected = new HttpResponse(200, httpHeaders, JSON.stringify(transformedResource));
 
-        assert.isTrue(resourceTransformCallback.calledWith(people, urlParamMapper));
+        assert.isTrue(resourceTransformCallback.calledWith(people, handlerPayload.urlParameters));
         assert.deepEqual(response, expected, 'Resource getter did not return the expected http response');
     });
 
@@ -113,17 +125,22 @@ describe('Handler to return http resource for GET requests', function () {
             }
         };
 
-        var urlParamMapper = {
+        var urlParameters = {
             resourceName: resourceName,
             page: 'page'
         };
 
+        var handlerPayload = {
+            request: {},
+            urlParameters: urlParameters
+        };
+
         var resourceTransformCallback = sinon.stub().returns(undefined);
-        var response = resourceGetter(urlParamMapper, resourceParamMapper, resourceTransformCallback);
+        var response = resourceGetter(handlerPayload, resourceParamMapper, resourceTransformCallback);
 
         var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people));
 
-        assert.isTrue(resourceTransformCallback.calledWith(people, urlParamMapper));
+        assert.isTrue(resourceTransformCallback.calledWith(people, handlerPayload.urlParameters));
         assert.deepEqual(response, expected, 'Resource getter did not return the expected http response');
     });
 });
