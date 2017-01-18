@@ -1,7 +1,7 @@
 var resourceDao = require('../daos/resource.dao');
 var HttpResponse = require('./http.response');
 
-var resourceGetter = function (urlParameters, parameterMapper) {
+var resourceGetter = function (urlParameters, parameterMapper, resourceTransformerCallback) {
     var resourceName = urlParameters.resourceName;
 
     var daoQueryObject = parameterMapper.toResourceDaoQueryObject(resourceName, urlParameters);
@@ -9,6 +9,11 @@ var resourceGetter = function (urlParameters, parameterMapper) {
 
     if (parameterMapper.isQueryById(resourceName, urlParameters)) {
         resource = resource[0];
+    }
+
+    if(resourceTransformerCallback) {
+        var transformedResource = resourceTransformerCallback(resource, urlParameters);
+        resource = transformedResource ? transformedResource : resource;
     }
 
     var httpHeaders = {

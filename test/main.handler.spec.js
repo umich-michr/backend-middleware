@@ -84,16 +84,17 @@ describe('Handler Provider should find handler for http request', function () {
     });
 
     it('testGetHandler(Object request) - Handler matching both request and url should return a handler', function () {
-        var handler = new Handler(routes, handlers, parameterMapper, dateFormat);
-
+        var resourceTransormerCallback = sinon.spy();
+        var handler = new Handler(routes, handlers, parameterMapper, resourceTransormerCallback);
         var request = {
             url: '/backend/contacts',
             method: requestType.GET
         };
 
+
         var response = handler.handle(request, parameterMapper);
 
-        assert.isTrue(handlers.getContacts.calledWithExactly({}, parameterMapper, dateFormat));
+        assert.isTrue(handlers.getContacts.calledWithExactly({}, parameterMapper, resourceTransormerCallback));
     });
 
 });

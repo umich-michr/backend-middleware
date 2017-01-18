@@ -22,7 +22,8 @@ var config = {
     resourceUrlParamMapFiles: {
         path: './data/resource-url-param-map',
         extension: '.url.param.map.json'
-    }
+    },
+    resourceTransormerCallback: sinon.stub()
 };
 
 var mockedResourceDatabase = sinon.stub({
@@ -34,10 +35,11 @@ var mockedResourceParameterMapper = {
 };
 var MockedResourceParameterMapper = sinon.stub().returns(mockedResourceParameterMapper);
 
-var handler = function (routes, handlers, resourceParameterMapper) {
+var handler = function (routes, handlers, resourceParameterMapper, resourceTransormerCallback) {
     assert.equal(config.routes, routes);
     assert.equal(config.handlers, handlers);
     assert.equal(mockedResourceParameterMapper, resourceParameterMapper);
+    assert.equal(config.resourceTransormerCallback, resourceTransormerCallback);
 };
 
 var createMiddleWareConstructor = function (mockHandler) {

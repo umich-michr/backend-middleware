@@ -1,5 +1,6 @@
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
+var sinon = require('sinon');
 
 var HttpResponse = require('../../src/handlers/http.response');
 
@@ -45,7 +46,7 @@ describe('Handler to return http resource for GET requests', function () {
             resourceName: resourceName
         }, resourceParamMapper);
 
-        var expected = new HttpResponse(200, httpHeaders, people);
+        var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people));
 
         assert.deepEqual(response, expected, 'Resource getter did not return the expected http response');
     });
@@ -68,9 +69,61 @@ describe('Handler to return http resource for GET requests', function () {
             resourceId: 5
         }, resourceParamMapper);
 
-        var expected = new HttpResponse(200, httpHeaders, people[0]);
+        var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people[0]));
 
         assert.deepEqual(response, expected, 'Resource getter did not return the expected http response when resource has to be queried by parameters');
     });
 
+    it('testResourceGetter(String resourceName) - should return response with transformed resource if callback provided and returns transformed resource', function () {
+        var resourceName = 'people';
+
+        var resourceParamMapper = {
+            toResourceDaoQueryObject: function () {
+                return null;
+            },
+            isQueryById: function () {
+                return false;
+            }
+        };
+
+        var urlParamMapper = {
+            resourceName: resourceName,
+            page: 'page'
+        };
+
+        var transformedResource = {};
+        var resourceTransformCallback = sinon.stub().returns(transformedResource);
+        var response = resourceGetter(urlParamMapper, resourceParamMapper, resourceTransformCallback);
+
+        var expected = new HttpResponse(200, httpHeaders, JSON.stringify(transformedResource));
+
+        assert.isTrue(resourceTransformCallback.calledWith(people, urlParamMapper));
+        assert.deepEqual(response, expected, 'Resource getter did not return the expected http response');
+    });
+
+    it('testResourceGetter(String resourceName) - should return response with resource intact if callback returns nothing', function () {
+        var resourceName = 'people';
+
+        var resourceParamMapper = {
+            toResourceDaoQueryObject: function () {
+                return null;
+            },
+            isQueryById: function () {
+                return false;
+            }
+        };
+
+        var urlParamMapper = {
+            resourceName: resourceName,
+            page: 'page'
+        };
+
+        var resourceTransformCallback = sinon.stub().returns(undefined);
+        var response = resourceGetter(urlParamMapper, resourceParamMapper, resourceTransformCallback);
+
+        var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people));
+
+        assert.isTrue(resourceTransformCallback.calledWith(people, urlParamMapper));
+        assert.deepEqual(response, expected, 'Resource getter did not return the expected http response');
+    });
 });
