@@ -3,6 +3,7 @@ var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 
 var HttpResponse = require('../../src/handlers/http.response');
+var HandlerPayload = require('../../src/handlers/handler.payload');
 
 var people = [{
     id: 1,
@@ -42,12 +43,8 @@ describe('Handler to return http resource for GET requests', function () {
             }
         };
 
-        var response = resourceGetter({
-            request:{},
-            urlParameters:{
-                resourceName: resourceName
-            },
-            parameterMapper: resourceParamMapper});
+        var httpPayload = new HandlerPayload({}, {resourceName: resourceName}, resourceParamMapper);
+        var response = resourceGetter(httpPayload);
 
         var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 
@@ -67,13 +64,12 @@ describe('Handler to return http resource for GET requests', function () {
             }
         };
 
-        var response = resourceGetter(
-            {
-                request:{},
-                urlParameters:{
-                    resourceName: resourceName,
-                    resourceId: 5
-                }, parameterMapper: resourceParamMapper});
+        var handlerPayload = new HandlerPayload({},{
+            resourceName: resourceName,
+            resourceId: 5
+        },resourceParamMapper);
+
+        var response = resourceGetter(handlerPayload);
 
         var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people[0]), resourceName);
 
@@ -97,11 +93,7 @@ describe('Handler to return http resource for GET requests', function () {
             page: 'page'
         };
 
-        var handlerPayload = {
-            request: {},
-            urlParameters: urlParameters,
-            parameterMapper:resourceParamMapper
-        };
+        var handlerPayload = new HandlerPayload({},urlParameters,resourceParamMapper);
 
         var response = new HttpResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 
@@ -131,11 +123,7 @@ describe('Handler to return http resource for GET requests', function () {
             page: 'page'
         };
 
-        var handlerPayload = {
-            request: {},
-            urlParameters: urlParameters,
-            parameterMapper: resourceParamMapper
-        };
+        var handlerPayload = new HandlerPayload({},urlParameters,resourceParamMapper);
 
         var response = new HttpResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 

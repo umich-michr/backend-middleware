@@ -9,7 +9,8 @@ var middleware = function () {
     // Enumeration for request types supported
     this.HttpMethod = require('./request.type');
     // Constructor function for handlers to use
-    this.HttpandlerPayload = require('./handlers/handler.payload');
+    this.HttpHandlerPayload = require('./handlers/handler.payload');
+    this.HttpResponse = require('./handlers/http.response');
     this.ResourceUrlParameterMapper = ResourceUrlParameterMapper;
 
     var thisModule = this;

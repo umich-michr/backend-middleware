@@ -1,5 +1,5 @@
-module.exports = function(request,urlParameters, parameterMapper){
+module.exports = function(request,urlParameters,parameterMapper){
     this.request = request;
-    this.urlParamters = urlParameters;
+    this.urlParameters = urlParameters;
     this.parameterMapper = parameterMapper;
 };

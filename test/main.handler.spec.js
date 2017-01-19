@@ -44,7 +44,7 @@ describe('Handler Provider should find handler for http request', function () {
         };
 
         var handlerPayload = { request: { url: '/backend/getAll/someres', method: 'GET' },
-            urlParamters: { resource: 'someres' },
+            urlParameters: { resource: 'someres' },
             parameterMapper: {} };
 
         var response = handler.handle(request);
@@ -95,7 +95,7 @@ describe('Handler Provider should find handler for http request', function () {
 
         //uniloc lookup response: { name: handlerName, options: {query and/or url parameters} }
         var handlerPayload = { request: { url: '/backend/contacts', method: 'GET' },
-            urlParamters: {},
+            urlParameters: {},
             parameterMapper: {} };
         var response = handler.handle(request);
 
