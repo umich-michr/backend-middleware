@@ -3,14 +3,17 @@ var helpers = require('./helper');
 var ResourceDatabase = require('./resource.database');
 var ResourceUrlParameterMapper = require('./handlers/resource.parameter.mapper');
 
-var middleware = function () {
+var BackendMiddleware = function () {
 
     //Export the class definitions for the clients who would customize the standard behavior so that they can comply with domain object needs.
     // Enumeration for request types supported
-    this.HttpMethod = require('./request.type');
+    this.HttpMethod = require('./http.method.js');
     // Constructor function for handlers to use
     this.HttpHandlerPayload = require('./handlers/handler.payload');
     this.HttpResponse = require('./handlers/http.response');
+    this.UrlParser = require('./url.parser');
+    this.HelperFunctions = require('./helper');
+
     this.ResourceUrlParameterMapper = ResourceUrlParameterMapper;
 
     var thisModule = this;
@@ -35,7 +38,7 @@ var middleware = function () {
         }
     };
 
-   this.createMiddleware = function(config){
+   this.create = function(config){
        init(config);
        return function (req, res, next) {
            var response = handler.handle(req);
@@ -52,4 +55,4 @@ var middleware = function () {
    };
 };
 
-module.exports = middleware;
+module.exports = new BackendMiddleware();

@@ -42,7 +42,7 @@ var handler = function (routes, handlers, resourceParameterMapper, responseTrans
     assert.equal(config.responseTransformerCallback, responseTransformerCallback);
 };
 
-var createMiddlewareTest = function (mockHandler) {
+var createBackendMiddlewareTest = function (mockHandler) {
     return proxyquire('../src/middleware', {
         './main.handler': mockHandler,
         './resource.database': mockedResourceDatabaseConstructor,
@@ -50,7 +50,7 @@ var createMiddlewareTest = function (mockHandler) {
     });
 };
 
-describe('Middleware function should process requests', function () {
+describe('BackendMiddleware function should process requests', function () {
 
     afterEach(function () {
         assert.isTrue(mockedResourceDatabaseConstructor.calledWith(mockedResourceParameterMapper, config.dataFiles.path, config.dataFiles.extension));
@@ -63,9 +63,8 @@ describe('Middleware function should process requests', function () {
             return undefined;
         };
 
-        var Middleware = createMiddlewareTest(handler);
+        var middleware = createBackendMiddlewareTest(handler).create(config);
 
-        var middleware = new Middleware().createMiddleware(config);
         var nextSpy = sinon.spy();
 
         middleware({}, {}, nextSpy);
@@ -82,9 +81,8 @@ describe('Middleware function should process requests', function () {
             };
         };
 
-        var Middleware = createMiddlewareTest(handler);
+        var middleware = createBackendMiddlewareTest(handler).create(config);
 
-        var middleware = new Middleware(config).createMiddleware(config);
         var nextSpy = sinon.spy();
         var res = {
             writeHead: function () {},
@@ -114,9 +112,8 @@ describe('Middleware function should process requests', function () {
             };
         };
 
-        var Middleware = createMiddlewareTest(handler);
+        var middleware = createBackendMiddlewareTest(handler).create(config);
 
-        var middleware = new Middleware(config).createMiddleware(config);
         var nextSpy = sinon.spy();
         var res = {
             writeHead: function () {},
@@ -149,9 +146,8 @@ describe('Middleware function should process requests', function () {
             };
         };
 
-        var Middleware = createMiddlewareTest(handler);
+        var middleware = createBackendMiddlewareTest(handler).create(config);
 
-        var middleware = new Middleware(config).createMiddleware(config);
         var nextSpy = sinon.spy();
         var res = {
             writeHead: function () {},
@@ -176,9 +172,8 @@ describe('Middleware function should process requests', function () {
             return {};
         };
 
-        var Middleware = createMiddlewareTest(handler);
+        var middleware = createBackendMiddlewareTest(handler).create(config);
 
-        var middleware = new Middleware(config).createMiddleware(config);
         var nextSpy = sinon.spy();
         var res = {
             writeHead: function () {},

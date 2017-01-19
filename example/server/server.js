@@ -5,8 +5,8 @@ const openBrowser = (args[1]==='true');
 
 var bodyParser = require('body-parser');
 
-//Offline Database Middleware to mock responses to backend requests.
-const BackendMiddleware = require('../../src/middleware.js');
+//Offline Database BackendMiddleware to mock responses to backend requests.
+const backendMiddleware = require('../../src/middleware.js');
 const config ={
     routes:require('../middleware-config/routes.js'),
     handlers:require('../middleware-config/handlers.js'),
@@ -29,7 +29,7 @@ bs.init(
     {
         notify: false,
         server: baseDir,
-        middleware: [bodyParser.json(),bodyParser.urlencoded({extended:true}),new BackendMiddleware().createMiddleware(config)],
+        middleware: [bodyParser.json(),bodyParser.urlencoded({extended:true}),backendMiddleware.create(config)],
         https: {
             key : "example/server/certs/server.key",
             cert: "example/server/certs/server.crt"

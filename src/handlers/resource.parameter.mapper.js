@@ -3,7 +3,7 @@ var helpers = require('../helper');
 module.exports = function (urlParameterDateFormat, urlParamMapFilePath, urlParamFileExtension) {
 
     this.RESOURCE_URL_PARAM_MAP = helpers.readFilesToMap(urlParamMapFilePath, urlParamFileExtension || '.url.param.map.json');
-    this.urlParameterDateFormat = urlParameterDateFormat || helpers.defaultDateFormat;
+    this.URL_PARAMETER_DATE_FORMAT = urlParameterDateFormat || helpers.defaultDateFormat;
 
     this.isQueryById = function (resourceName, urlParametersObject) {
         var resourceUrlParamMap = this.RESOURCE_URL_PARAM_MAP[resourceName];
@@ -46,7 +46,7 @@ module.exports = function (urlParameterDateFormat, urlParamMapFilePath, urlParam
             var resourceAttributeUrlParameterValueType = resourceUrlParamMap[queryParam].type;
 
             if (attributeSelector) {
-                var queryValue = helpers.castToParamValue(urlParametersObject[queryParam], resourceAttributeUrlParameterValueType, this.urlParameterDateFormat);
+                var queryValue = helpers.castToParamValue(urlParametersObject[queryParam], resourceAttributeUrlParameterValueType, this.URL_PARAMETER_DATE_FORMAT);
                 resourceDaoQueryObject[attributeSelector] = queryValue;
             }
         }

@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
-var RequestType = require('../src/request.type');
+var RequestType = require('../src/http.method.js');
 
 var defaultRoutes = {
     getResource: 'GET /backend/to_be_overwritten_by_user_provided_routes',

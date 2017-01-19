@@ -9,7 +9,7 @@ module.exports = function (resourceUrlParameterMapper, dataFilePath, dataFileExt
         castDateValuesInDatabase(global.DATABASE);
     };
     var castDateValuesInDatabase = function (db) {
-        var dateFormat = resourceUrlParameterMapper.urlParameterDateFormat;
+        var dateFormat = resourceUrlParameterMapper.URL_PARAMETER_DATE_FORMAT;
 
         for (var resourceName in db) {
             var resources = db[resourceName];
