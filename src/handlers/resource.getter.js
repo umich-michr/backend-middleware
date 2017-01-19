@@ -21,7 +21,7 @@ var resourceGetter = function (handlerPayload, parameterMapper, responseTransfor
     var httpResponse = new HttpResponse(200, httpHeaders, JSON.stringify(resource), resourceName);
 
     if(responseTransformerCallback) {
-        var transformedResponse = responseTransformerCallback(httpResponse, urlParameters);
+        var transformedResponse = responseTransformerCallback(handlerPayload, httpResponse);
         httpResponse = transformedResponse ? transformedResponse : httpResponse;
     }
 

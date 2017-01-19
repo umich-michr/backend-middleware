@@ -23,7 +23,7 @@ var config = {
         path: './data/resource-url-param-map',
         extension: '.url.param.map.json'
     },
-    resourceTransormerCallback: sinon.stub()
+    responseTransformerCallback: sinon.stub()
 };
 
 var mockedResourceDatabase = sinon.stub({
@@ -35,11 +35,11 @@ var mockedResourceParameterMapper = {
 };
 var MockedResourceParameterMapper = sinon.stub().returns(mockedResourceParameterMapper);
 
-var handler = function (routes, handlers, resourceParameterMapper, resourceTransormerCallback) {
+var handler = function (routes, handlers, resourceParameterMapper, responseTransformerCallback) {
     assert.equal(config.routes, routes);
     assert.equal(config.handlers, handlers);
     assert.equal(mockedResourceParameterMapper, resourceParameterMapper);
-    assert.equal(config.resourceTransormerCallback, resourceTransormerCallback);
+    assert.equal(config.responseTransformerCallback, responseTransformerCallback);
 };
 
 var createMiddleWareConstructor = function (mockHandler) {

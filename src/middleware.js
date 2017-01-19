@@ -5,8 +5,7 @@ var ResourceUrlParameterMapper = require('./handlers/resource.parameter.mapper')
 
 var middleware = function (config) {
     var resourceUrlParameterMapper = new ResourceUrlParameterMapper(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
-    var handler = new Handler(config.routes, config.handlers, resourceUrlParameterMapper, config.resourceTransormerCallback);
-
+    var handler = new Handler(config.routes, config.handlers, resourceUrlParameterMapper, config.responseTransformerCallback);
     var resourceDatabase = new ResourceDatabase(resourceUrlParameterMapper, config.dataFiles.path, config.dataFiles.extension);
     resourceDatabase.start();
 

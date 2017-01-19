@@ -110,7 +110,7 @@ describe('Handler to return http resource for GET requests', function () {
 
         var actual = resourceGetter(handlerPayload, resourceParamMapper, responseTransformerCallback);
 
-        assert.isTrue(responseTransformerCallback.calledWith(response, handlerPayload.urlParameters));
+        assert.isTrue(responseTransformerCallback.calledWith(handlerPayload, response));
         assert.deepEqual(actual, transformedResponse, 'Resource getter did not return the expected http response');
     });
 
@@ -141,7 +141,7 @@ describe('Handler to return http resource for GET requests', function () {
         var responseTransformerCallback = sinon.stub().returns(undefined);
         var actual = resourceGetter(handlerPayload, resourceParamMapper, responseTransformerCallback);
 
-        assert.isTrue(responseTransformerCallback.calledWith(response, handlerPayload.urlParameters));
+        assert.isTrue(responseTransformerCallback.calledWith(handlerPayload,response));
         assert.deepEqual(actual, response, 'Resource getter did not return the response http response');
     });
 });

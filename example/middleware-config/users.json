@@ -1,0 +1,26 @@
+[
+    {
+        "username":"gunalmel",
+        "password":"gunalmel123",
+        "roles":["ROLE_COLLABORATION_ADMIN","ROLE_FORM_DESIGNER,ROLE_STAFF"]
+    },
+    {
+        "username":"tianyunz",
+        "password":"tianyunz123",
+        "roles":["ROLE_COLLABORATION_ADMIN","ROLE_FORM_DESIGNER,ROLE_STAFF"]
+    },
+    {
+        "username":"smaidlow",
+        "password":"smaidlow123",
+        "roles":["ROLE_STAFF"]
+    },
+    {
+        "username":"mdbliss",
+        "password":"mdbliss123",
+        "roles":["ROLE_FORM_DESIGNER"]
+    },
+    {
+        "username":"rtonev",
+        "password":"rtonev123"
+    }
+]
