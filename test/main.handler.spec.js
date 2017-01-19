@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
-var requestType = require('../src/request.type');
+var RequestType = require('../src/request.type');
 
 var defaultRoutes = {
     getResource: 'GET /backend/to_be_overwritten_by_user_provided_routes',
@@ -40,14 +40,16 @@ describe('Handler Provider should find handler for http request', function () {
 
         var request = {
             url: '/backend/getAll/someres',
-            method: requestType.GET
+            method: RequestType.GET
         };
 
-        var handlerPayload = {"request":request,"urlParameters":{"resource":"someres"}};
+        var handlerPayload = { request: { url: '/backend/getAll/someres', method: 'GET' },
+            urlParamters: { resource: 'someres' },
+            parameterMapper: {} };
 
         var response = handler.handle(request);
 
-        assert.isTrue(defaultHandlers.getResource.calledWithExactly(handlerPayload, parameterMapper, undefined));
+        assert.isTrue(defaultHandlers.getResource.calledWithExactly(handlerPayload, undefined));
     });
 
     it('testGetHandler(Object request) - No handler matching the request url or method', function () {
@@ -55,7 +57,7 @@ describe('Handler Provider should find handler for http request', function () {
 
         var request = {
             url: '/backend/contacts/attr/name/john?pass=b',
-            method: requestType.PUT
+            method: RequestType.PUT
         };
 
         assert.isUndefined(handler.handle(request));
@@ -66,7 +68,7 @@ describe('Handler Provider should find handler for http request', function () {
 
         var request = {
             url: '/backend/contacts/attr/name/john?pass=b',
-            method: requestType.GET
+            method: RequestType.GET
         };
 
         assert.isUndefined(handler.handle(request));
@@ -77,7 +79,7 @@ describe('Handler Provider should find handler for http request', function () {
 
         var request = {
             url: '/backend/contacts',
-            method: requestType.PUT
+            method: RequestType.PUT
         };
 
         assert.isUndefined(handler.handle(request));
@@ -88,15 +90,16 @@ describe('Handler Provider should find handler for http request', function () {
         var handler = new Handler(routes, handlers, parameterMapper, resourceTransormerCallback);
         var request = {
             url: '/backend/contacts',
-            method: requestType.GET
+            method: RequestType.GET
         };
 
         //uniloc lookup response: { name: handlerName, options: {query and/or url parameters} }
-        var handlerPayload = {request:request, urlParameters:{}};
-
+        var handlerPayload = { request: { url: '/backend/contacts', method: 'GET' },
+            urlParamters: {},
+            parameterMapper: {} };
         var response = handler.handle(request);
 
-        assert.isTrue(handlers.getContacts.calledWithExactly(handlerPayload, parameterMapper, resourceTransormerCallback));
+        assert.isTrue(handlers.getContacts.calledWithExactly(handlerPayload, resourceTransormerCallback));
     });
 
 });

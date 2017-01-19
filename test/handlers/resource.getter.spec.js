@@ -46,8 +46,8 @@ describe('Handler to return http resource for GET requests', function () {
             request:{},
             urlParameters:{
                 resourceName: resourceName
-            }
-        }, resourceParamMapper);
+            },
+            parameterMapper: resourceParamMapper});
 
         var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 
@@ -73,8 +73,7 @@ describe('Handler to return http resource for GET requests', function () {
                 urlParameters:{
                     resourceName: resourceName,
                     resourceId: 5
-                }
-            }, resourceParamMapper);
+                }, parameterMapper: resourceParamMapper});
 
         var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people[0]), resourceName);
 
@@ -100,7 +99,8 @@ describe('Handler to return http resource for GET requests', function () {
 
         var handlerPayload = {
             request: {},
-            urlParameters: urlParameters
+            urlParameters: urlParameters,
+            parameterMapper:resourceParamMapper
         };
 
         var response = new HttpResponse(200, httpHeaders, JSON.stringify(people), resourceName);
@@ -108,7 +108,7 @@ describe('Handler to return http resource for GET requests', function () {
         var transformedResponse = {};
         var responseTransformerCallback = sinon.stub().returns(transformedResponse);
 
-        var actual = resourceGetter(handlerPayload, resourceParamMapper, responseTransformerCallback);
+        var actual = resourceGetter(handlerPayload, responseTransformerCallback);
 
         assert.isTrue(responseTransformerCallback.calledWith(handlerPayload, response));
         assert.deepEqual(actual, transformedResponse, 'Resource getter did not return the expected http response');
@@ -133,13 +133,14 @@ describe('Handler to return http resource for GET requests', function () {
 
         var handlerPayload = {
             request: {},
-            urlParameters: urlParameters
+            urlParameters: urlParameters,
+            parameterMapper: resourceParamMapper
         };
 
         var response = new HttpResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 
         var responseTransformerCallback = sinon.stub().returns(undefined);
-        var actual = resourceGetter(handlerPayload, resourceParamMapper, responseTransformerCallback);
+        var actual = resourceGetter(handlerPayload, responseTransformerCallback);
 
         assert.isTrue(responseTransformerCallback.calledWith(handlerPayload,response));
         assert.deepEqual(actual, response, 'Resource getter did not return the response http response');

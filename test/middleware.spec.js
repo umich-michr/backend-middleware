@@ -42,7 +42,7 @@ var handler = function (routes, handlers, resourceParameterMapper, responseTrans
     assert.equal(config.responseTransformerCallback, responseTransformerCallback);
 };
 
-var createMiddleWareConstructor = function (mockHandler) {
+var createMiddlewareTest = function (mockHandler) {
     return proxyquire('../src/middleware', {
         './main.handler': mockHandler,
         './resource.database': mockedResourceDatabaseConstructor,
@@ -58,21 +58,21 @@ describe('Middleware function should process requests', function () {
         assert.isTrue(MockedResourceParameterMapper.calledWithExactly(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension));
     });
 
-    it('testMiddleWare(Object config) - No handler matching request url', function () {
+    it('testMiddleware(Object config) - No handler matching request url', function () {
         handler.prototype.handle = function () {
             return undefined;
         };
 
-        var MiddleWare = createMiddleWareConstructor(handler);
+        var Middleware = createMiddlewareTest(handler);
 
-        var middleWare = new MiddleWare(config);
+        var middleware = new Middleware().createMiddleware(config);
         var nextSpy = sinon.spy();
 
-        middleWare({}, {}, nextSpy);
+        middleware({}, {}, nextSpy);
         assert.isTrue(nextSpy.calledOnce);
     });
 
-    it('testMiddleWare(Object config) - Handler matching request without response headers', function () {
+    it('testMiddleware(Object config) - Handler matching request without response headers', function () {
         handler.prototype.handle = function () {
             return {
                 statusCode: 200,
@@ -82,9 +82,9 @@ describe('Middleware function should process requests', function () {
             };
         };
 
-        var MiddleWare = createMiddleWareConstructor(handler);
+        var Middleware = createMiddlewareTest(handler);
 
-        var middleWare = new MiddleWare(config);
+        var middleware = new Middleware(config).createMiddleware(config);
         var nextSpy = sinon.spy();
         var res = {
             writeHead: function () {},
@@ -93,7 +93,7 @@ describe('Middleware function should process requests', function () {
         };
         sinon.stub(res);
 
-        middleWare({}, res, nextSpy);
+        middleware({}, res, nextSpy);
         assert.isTrue(nextSpy.notCalled);
         assert.isTrue(res.writeHead.calledWith(200));
         assert.isTrue(res.write.calledWith({
@@ -102,7 +102,7 @@ describe('Middleware function should process requests', function () {
         assert.isTrue(res.end.called);
     });
 
-    it('testMiddleWare(Object config) - Handler matching request without status code', function () {
+    it('testMiddleware(Object config) - Handler matching request without status code', function () {
         handler.prototype.handle = function () {
             return {
                 headers: {
@@ -114,9 +114,9 @@ describe('Middleware function should process requests', function () {
             };
         };
 
-        var MiddleWare = createMiddleWareConstructor(handler);
+        var Middleware = createMiddlewareTest(handler);
 
-        var middleWare = new MiddleWare(config);
+        var middleware = new Middleware(config).createMiddleware(config);
         var nextSpy = sinon.spy();
         var res = {
             writeHead: function () {},
@@ -126,7 +126,7 @@ describe('Middleware function should process requests', function () {
         };
         sinon.stub(res);
 
-        middleWare({}, res, nextSpy);
+        middleware({}, res, nextSpy);
         assert.isTrue(nextSpy.notCalled);
         assert.isTrue(res.writeHead.notCalled);
         assert.isTrue(res.setHeader.calledWith('headerName', 'header'));
@@ -136,7 +136,7 @@ describe('Middleware function should process requests', function () {
         assert.isTrue(res.end.called);
     });
 
-    it('testMiddleWare(Object config) - Handler matching request with status code and response headers', function () {
+    it('testMiddleware(Object config) - Handler matching request with status code and response headers', function () {
         handler.prototype.handle = function () {
             return {
                 headers: {
@@ -149,9 +149,9 @@ describe('Middleware function should process requests', function () {
             };
         };
 
-        var MiddleWare = createMiddleWareConstructor(handler);
+        var Middleware = createMiddlewareTest(handler);
 
-        var middleWare = new MiddleWare(config);
+        var middleware = new Middleware(config).createMiddleware(config);
         var nextSpy = sinon.spy();
         var res = {
             writeHead: function () {},
@@ -161,7 +161,7 @@ describe('Middleware function should process requests', function () {
         };
         sinon.stub(res);
 
-        middleWare({}, res, nextSpy);
+        middleware({}, res, nextSpy);
         assert.isTrue(nextSpy.notCalled);
         assert.isTrue(res.writeHead.calledWith(200));
         assert.isTrue(res.setHeader.calledWith('headerName', 'header'));
@@ -171,14 +171,14 @@ describe('Middleware function should process requests', function () {
         assert.isTrue(res.end.called);
     });
 
-    it('testMiddleWare(Object config) - Handler matching request without status code, response headers or body', function () {
+    it('testMiddleware(Object config) - Handler matching request without status code, response headers or body', function () {
         handler.prototype.handle = function () {
             return {};
         };
 
-        var MiddleWare = createMiddleWareConstructor(handler);
+        var Middleware = createMiddlewareTest(handler);
 
-        var middleWare = new MiddleWare(config);
+        var middleware = new Middleware(config).createMiddleware(config);
         var nextSpy = sinon.spy();
         var res = {
             writeHead: function () {},
@@ -188,7 +188,7 @@ describe('Middleware function should process requests', function () {
         };
         sinon.stub(res);
 
-        middleWare({}, res, nextSpy);
+        middleware({}, res, nextSpy);
         assert.isTrue(nextSpy.notCalled);
         assert.isTrue(res.writeHead.notCalled);
         assert.isTrue(res.setHeader.notCalled);

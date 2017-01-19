@@ -6,7 +6,7 @@ const openBrowser = (args[1]==='true');
 var bodyParser = require('body-parser');
 
 //Offline Database Middleware to mock responses to backend requests.
-const backendMiddleware = require('../../src/middleware.js');
+const BackendMiddleware = require('../../src/middleware.js');
 const config ={
     routes:require('../middleware-config/routes.js'),
     handlers:require('../middleware-config/handlers.js'),
@@ -23,12 +23,13 @@ const config ={
 };
 
 var bs = require('browser-sync').create();
+
 // init starts the server
 bs.init(
     {
         notify: false,
         server: baseDir,
-        middleware: [bodyParser.json(),bodyParser.urlencoded({extended:true}),backendMiddleware(config)],
+        middleware: [bodyParser.json(),bodyParser.urlencoded({extended:true}),new BackendMiddleware().createMiddleware(config)],
         https: {
             key : "example/server/certs/server.key",
             cert: "example/server/certs/server.crt"

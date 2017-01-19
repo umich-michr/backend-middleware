@@ -1,6 +1,7 @@
 var uniloc = require('uniloc-michr-fork');
 var defaultRoutes = require('./default.routes');
 var defaultHandlers = require('./default.handlers');
+var HandlerPayload = require('./handlers/handler.payload');
 var _ = require('underscore');
 //uniloc lookup response: { name: handlerName, options: {query and/or url parameters} }
 
@@ -22,9 +23,8 @@ var Handler = function (routes, routeHandlers, parameterMapper, responseTransfor
         if (handlerLookup && handlerLookup.name) {
             var requestHandler = this.routeHandlers[handlerLookup.name];
             if (requestHandler) {
-                var handlerPayload = {request:request, urlParameters:handlerLookup.options};
-
-                return requestHandler(handlerPayload, parameterMapper, responseTransformerCallback);
+                var handlerPayload = new HandlerPayload(request, handlerLookup.options, parameterMapper);
+                return requestHandler(handlerPayload, responseTransformerCallback);
             }
         }
 

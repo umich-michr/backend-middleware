@@ -1,4 +1,4 @@
-// handlerPayload: {request:{},urlParameters:{}}
+// handlerPayload: {request:{},urlParameters:{}, parameterMapper:parameterMapper}
 // parameterMapper: {RESOURCE_URL_PARAM_MAP: Object,
 //                   urlParameterDateFormat: String,
 //                              isQueryById: function(resourceName, urlParameters),
@@ -19,7 +19,7 @@ var httpHeaders = {
     'Content-Type': 'application/json;charset=UTF-8'
 };
 var handlers = {
-    login: function(handlerPayload, parameterMapper, responseTransformerCallback){
+    login: function(handlerPayload, responseTransformerCallback){
         var credentials = handlerPayload.request.body;
         var authenticatedUser = _.findWhere(users,credentials);
         var httpResponse = new HttpResponse(200, httpHeaders, '', 'auth');
@@ -36,7 +36,7 @@ var handlers = {
         global.AUTH_PRINCIPAL = _.omit(authenticatedUser,'password');
         return httpResponse;
     },
-    logout: function(handlerPayload, parameterMapper, responseTransformerCallback){
+    logout: function(handlerPayload, responseTransformerCallback){
         var authenticatedUser = global.AUTH_PRINCIPAL;
         global.AUTH_PRINCIPAL = undefined;
         if(authenticatedUser){
