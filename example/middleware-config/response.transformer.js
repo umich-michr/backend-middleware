@@ -9,12 +9,8 @@
 // }
 // handlerPayload = { request:request, urlParameters:{id:10, 'first-name':'John'}, parameterMapper} **!! the last key parameterMapper in the object is not implemented yet see issue #2 in GitHub.
 var _ = require('underscore');
-module.exports = function(handlerPayload, httpResponse) {
 
-    if (global.AUTH_PRINCIPAL) {
-        console.log('authenticated setting roles header');
-        httpResponse.headers['x-user-roles'] = global.AUTH_PRINCIPAL.roles.join(',');
-    }
+var paginate = function(handlerPayload, httpResponse){
     //PAGINATION STARTS
     var page = handlerPayload.urlParameters['page'];
     var pageSize = handlerPayload.urlParameters['page-size'];
@@ -36,6 +32,16 @@ module.exports = function(handlerPayload, httpResponse) {
         httpResponse.body = JSON.stringify(paginatedResult);
     }
     //PAGINATION ENDS
+};
+
+module.exports = function(handlerPayload, httpResponse) {
+
+    if (global.AUTH_PRINCIPAL) {
+        console.log('authenticated setting roles header');
+        httpResponse.headers['x-user-roles'] = global.AUTH_PRINCIPAL.roles.join(',');
+    }
+
+    paginate (handlerPayload, httpResponse);
 
     return httpResponse;
 };

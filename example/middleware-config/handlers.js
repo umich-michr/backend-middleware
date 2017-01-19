@@ -24,11 +24,18 @@ var handlers = {
         var authenticatedUser = _.findWhere(users,credentials);
         var httpResponse = new HttpResponse(200, httpHeaders, '', 'auth');
 
-        if(!authenticatedUser  || !authenticatedUser.roles || authenticatedUser.roles.length===0){
+        if(!authenticatedUser){
             httpResponse.statusCode=401;
             httpResponse.body='{"operation":"authentication","result":"failed"}';
             return httpResponse;
         }
+
+        if(!authenticatedUser.roles || authenticatedUser.roles.length===0){
+            httpResponse.statusCode=403;
+            httpResponse.body='{"operation":"authorization","result":"failed"}';
+            return httpResponse;
+        }
+
         httpResponse.headers['x-user-roles']=authenticatedUser.roles.join(',');
         httpResponse.body='{"operation":"authentication","result":"success"}';
         //if needed implement a more sophisticated real multi user/session authentication mechanism using cookies.
