@@ -1,6 +1,6 @@
 var uniloc = require('uniloc-michr-fork');
-var defaultRoutes = require('./default.routes');
-var defaultHandlers = require('./default.handlers');
+var defaultRoutes = require('./config/default.routes');
+var defaultHandlers = require('./config/default.handlers');
 var HandlerPayload = require('./handlers/handler.payload');
 var _ = require('underscore');
 //uniloc lookup response: { name: handlerName, options: {query and/or url parameters} }
@@ -13,11 +13,11 @@ var _ = require('underscore');
  * @param responseTransformerCallback An optional user provided callback method that will transform the http response returned by the route handler to any other form before being returned to client. It should accept resource to be returned and url parameter value map to apply custom logic to transfor it into the other form the callback function will return.
  * @constructor
  */
-var Handler = function (routes, routeHandlers, parameterMapper, responseTransformerCallback) {
+var Dispatcher = function (routes, routeHandlers, parameterMapper, responseTransformerCallback) {
     this.router = uniloc(_.extend(defaultRoutes, routes));
     this.routeHandlers = _.extend(defaultHandlers, routeHandlers);
 
-    this.handle = function (request) {
+    this.dispatch = function (request) {
         var handlerLookup = this.router.lookup(request.url, request.method);
 
         if (handlerLookup && handlerLookup.name) {
@@ -32,4 +32,4 @@ var Handler = function (routes, routeHandlers, parameterMapper, responseTransfor
     };
 };
 
-module.exports = Handler;
+module.exports = Dispatcher;

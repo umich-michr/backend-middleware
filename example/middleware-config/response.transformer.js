@@ -1,4 +1,4 @@
-// httpResponse ={
+// handlerResponse ={
 //      statusCode:200,
 //      headers: {
 //          'x-user-roles':['a','b'],
@@ -10,14 +10,14 @@
 // handlerPayload = { request:request, urlParameters:{id:10, 'first-name':'John'}, parameterMapper} **!! the last key parameterMapper in the object is not implemented yet see issue #2 in GitHub.
 var _ = require('underscore');
 
-var paginate = function(handlerPayload, httpResponse){
+var paginate = function(handlerPayload, handlerResponse){
     //PAGINATION STARTS
     var page = handlerPayload.urlParameters['page'];
     var pageSize = handlerPayload.urlParameters['page-size'];
-    var resource = JSON.parse(httpResponse.body);
+    var resource = JSON.parse(handlerResponse.body);
 
     if (isNaN(page) || isNaN(pageSize) || !resource || !_.isArray(resource)) {
-        return httpResponse;
+        return handlerResponse;
     }
 
     page = Number(page);
@@ -29,19 +29,19 @@ var paginate = function(handlerPayload, httpResponse){
         var paginatedResult = {};
         paginatedResult.totalCount = resource.length;
         paginatedResult.page = resource.slice(start, end);
-        httpResponse.body = JSON.stringify(paginatedResult);
+        handlerResponse.body = JSON.stringify(paginatedResult);
     }
     //PAGINATION ENDS
 };
 
-module.exports = function(handlerPayload, httpResponse) {
+module.exports = function(handlerPayload, handlerResponse) {
 
     if (global.AUTH_PRINCIPAL) {
         console.log('authenticated setting roles header');
-        httpResponse.headers['x-user-roles'] = global.AUTH_PRINCIPAL.roles.join(',');
+        handlerResponse.headers['x-user-roles'] = global.AUTH_PRINCIPAL.roles.join(',');
     }
 
-    paginate (handlerPayload, httpResponse);
+    paginate (handlerPayload, handlerResponse);
 
-    return httpResponse;
+    return handlerResponse;
 };

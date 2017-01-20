@@ -1,6 +1,7 @@
 var moment = require('moment');
 var _ = require('underscore');
 var fs = require('fs');
+var path = require('path');
 
 function HelperFunctions() {
     this.defaultDateFormat = 'YYYY-MM-DDThh.mm.ss.sss';
@@ -40,9 +41,6 @@ function HelperFunctions() {
     };
 
     this.absolutePath = function (pathRelativeToProjectRoot) {
-        var projectPath = require('path').dirname(__dirname).replace('/node_modules/backend-middleware','');
-        projectPath = (projectPath.lastIndexOf('/') === projectPath.length ? projectPath : projectPath + '/');
-
         var normalizedRelativePath = (pathRelativeToProjectRoot || './')
             //replace more than 2 dots with 2 dots
             .replace(/\.{3,}/g, '..')
@@ -52,8 +50,7 @@ function HelperFunctions() {
             .replace(/\/\.(?=\/)|\/\.$/g, '')
             //remove the preceding ".", "./" or "/" characters
             .replace(/^(\.\/|\/|\.$)/, '');
-
-        return projectPath + normalizedRelativePath;
+        return path.resolve(normalizedRelativePath).replace('/node_modules/backend-middleware','');
     };
 
     this.readFilesToMap = function (path, fileExtensionToUse) {
@@ -73,6 +70,7 @@ function HelperFunctions() {
                 var resourceName = resourceNameMatch[0];
                 try {
                     objectMap[resourceName] = require(qualifiedDataFileName);
+                    delete require.cache[require.resolve(qualifiedDataFileName)];
                 }
                 catch (e) {
                     console.error('could not read file ' + qualifiedDataFileName);

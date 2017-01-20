@@ -1,4 +1,4 @@
-var resourceGetter = require('./handlers/resource.getter');
+var resourceGetter = require('../handlers/resource.getter');
 
 var handlers = {
     getResource: resourceGetter,

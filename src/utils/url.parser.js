@@ -1,4 +1,4 @@
-var helperFunctions = require('./helper');
+var helperFunctions = require('./helpers');
 var _ = require('underscore');
 
 function UrlParser(queryStringParamObjectAttributeMap, paramValueDateFormat) {

@@ -2,7 +2,7 @@ var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 
-var HttpResponse = require('../../src/handlers/http.response');
+var HandlerResponse = require('../../src/handlers/handler.response');
 var HandlerPayload = require('../../src/handlers/handler.payload');
 
 var people = [{
@@ -23,7 +23,7 @@ var resourceDao = {
 };
 
 var resourceGetter = proxyquire('../../src/handlers/resource.getter', {
-    '../daos/resource.dao': resourceDao
+    '../database/daos/resource.dao': resourceDao
 });
 
 describe('Handler to return http resource for GET requests', function () {
@@ -47,7 +47,7 @@ describe('Handler to return http resource for GET requests', function () {
         var httpPayload = new HandlerPayload({}, {resourceName: resourceName}, resourceParamMapper);
         var response = resourceGetter(httpPayload);
 
-        var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people), resourceName);
+        var expected = new HandlerResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 
         assert.deepEqual(response, expected, 'Resource getter did not return the expected http response');
     });
@@ -72,7 +72,7 @@ describe('Handler to return http resource for GET requests', function () {
 
         var response = resourceGetter(handlerPayload);
 
-        var expected = new HttpResponse(200, httpHeaders, JSON.stringify(people[0]), resourceName);
+        var expected = new HandlerResponse(200, httpHeaders, JSON.stringify(people[0]), resourceName);
 
         assert.deepEqual(response, expected, 'Resource getter did not return the expected http response when resource has to be queried by parameters');
     });
@@ -96,7 +96,7 @@ describe('Handler to return http resource for GET requests', function () {
 
         var handlerPayload = new HandlerPayload({},urlParameters,resourceParamMapper);
 
-        var response = new HttpResponse(200, httpHeaders, JSON.stringify(people), resourceName);
+        var response = new HandlerResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 
         var transformedResponse = {};
         var responseTransformerCallback = sinon.stub().returns(transformedResponse);
@@ -126,7 +126,7 @@ describe('Handler to return http resource for GET requests', function () {
 
         var handlerPayload = new HandlerPayload({},urlParameters,resourceParamMapper);
 
-        var response = new HttpResponse(200, httpHeaders, JSON.stringify(people), resourceName);
+        var response = new HandlerResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 
         var responseTransformerCallback = sinon.stub().returns(undefined);
         var actual = resourceGetter(handlerPayload, responseTransformerCallback);
@@ -154,7 +154,7 @@ describe('Handler to return http resource for GET requests', function () {
 
         var handlerPayload = new HandlerPayload({},urlParameters,resourceParamMapper);
 
-        var response = new HttpResponse(404, httpHeaders, JSON.stringify({operation:'fetch-resource',result:'no matching resource is found'}), resourceName);
+        var response = new HandlerResponse(404, httpHeaders, JSON.stringify({operation:'fetch-resource',result:'no matching resource is found'}), resourceName);
 
         var responseTransformerCallback = sinon.stub().returns(undefined);
         var actual = resourceGetter(handlerPayload, responseTransformerCallback);

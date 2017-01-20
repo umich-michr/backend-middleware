@@ -1,9 +1,9 @@
 var assert = require('chai').assert;
 var moment = require('moment');
-var helperFunctions = require('../src/helper');
+var helperFunctions = require('../../src/utils/helpers');
 var sinon = require('sinon');
 
-var UrlParser = require('../src/url.parser');
+var UrlParser = require('../../src/utils/url.parser');
 
 var queryStringParamMap = {
     'custom-form': {
@@ -34,14 +34,7 @@ var url = '/mock/services-provided?page=1&page-size=20&programId=2806&teamId=51&
 var queryString = url.slice(url.lastIndexOf('?') + 1);
 
 describe('Query String Parser reads the url to build objects the dao could use to query document database', function () {
-    // it('should return the resource name from the url', function() {
-    //     var resourceName = urlParser.extractResourceName(url);
-    //     var expected = 'services-provided';
-    //
-    //     assert.equal(resourceName,expected,'The resource name is not found correctly in the url.');
-    // });
-
-    it('testExtractQueryStringParameters(String queryString) - should return array of key value pair arrays from url', function () {
+    beforeEach(function(){
         sinon.stub(helperFunctions, 'castToParamValue', function (value) {
             if (value === startDateString) {
                 return startDate;
@@ -56,6 +49,11 @@ describe('Query String Parser reads the url to build objects the dao could use t
                 return value;
             }
         });
+    });
+    afterEach(function(){
+        helperFunctions.castToParamValue.restore();
+    });
+    it('testExtractQueryStringParameters(String queryString) - should return array of key value pair arrays from url', function () {
         var queryStringParameters = urlParser.extractQueryStringParameters(queryString);
         var expected = [
                 ['page', 1],

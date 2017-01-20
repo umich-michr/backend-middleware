@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
-var RequestType = require('../src/http.method.js');
+var RequestType = require('../src/utils/http.methods.js');
 
 var defaultRoutes = {
     getResource: 'GET /backend/to_be_overwritten_by_user_provided_routes',
@@ -28,15 +28,15 @@ var handlers = {
 
 var parameterMapper = {};
 
-var Handler = proxyquire('../src/main.handler', {
-    './default.routes': defaultRoutes,
-    './default.handlers': defaultHandlers
+var Dispatcher = proxyquire('../src/dispatcher', {
+    './config/default.routes': defaultRoutes,
+    './config/default.handlers': defaultHandlers
 });
 
-describe('Handler Provider should find handler for http request', function () {
+describe('Dispatcher should route the request from middleware to the correct request handlers', function () {
 
     it('testGetHandler(Object request) - Default handler matching the request url and method', function () {
-        var handler = new Handler(routes, handlers, parameterMapper);
+        var dispatcher = new Dispatcher(routes, handlers, parameterMapper);
 
         var request = {
             url: '/backend/getAll/someres',
@@ -47,47 +47,47 @@ describe('Handler Provider should find handler for http request', function () {
             urlParameters: { resource: 'someres' },
             parameterMapper: {} };
 
-        var response = handler.handle(request);
+        var response = dispatcher.dispatch(request);
 
         assert.isTrue(defaultHandlers.getResource.calledWithExactly(handlerPayload, undefined));
     });
 
     it('testGetHandler(Object request) - No handler matching the request url or method', function () {
-        var handler = new Handler(routes, handlers, parameterMapper);
+        var dispatcher = new Dispatcher(routes, handlers, parameterMapper);
 
         var request = {
             url: '/backend/contacts/attr/name/john?pass=b',
             method: RequestType.PUT
         };
 
-        assert.isUndefined(handler.handle(request));
+        assert.isUndefined(dispatcher.dispatch(request));
     });
 
-    it('testGetHandler(Object request) - Request method matches but url does not match', function () {
-        var handler = new Handler(routes, handlers, parameterMapper);
+    it('testGetHandler(Object request) - Request method matches a handler but url does not match a handler', function () {
+        var dispatcher = new Dispatcher(routes, handlers, parameterMapper);
 
         var request = {
             url: '/backend/contacts/attr/name/john?pass=b',
             method: RequestType.GET
         };
 
-        assert.isUndefined(handler.handle(request));
+        assert.isUndefined(dispatcher.dispatch(request));
     });
 
-    it('testGetHandler(Object request) - Request method does not match but url matches', function () {
-        var handler = new Handler(routes, handlers, parameterMapper);
+    it('testGetHandler(Object request) - Request method does not match any handler but url matches a handler', function () {
+        var dispatcher = new Dispatcher(routes, handlers, parameterMapper);
 
         var request = {
             url: '/backend/contacts',
             method: RequestType.PUT
         };
 
-        assert.isUndefined(handler.handle(request));
+        assert.isUndefined(dispatcher.dispatch(request));
     });
 
-    it('testGetHandler(Object request) - Handler matching both request and url should return a handler', function () {
+    it('testGetHandler(Object request) - Dispatcher should dispatch the handler payload to the handler matching the url and http method.', function () {
         var resourceTransormerCallback = sinon.spy();
-        var handler = new Handler(routes, handlers, parameterMapper, resourceTransormerCallback);
+        var dispatcher = new Dispatcher(routes, handlers, parameterMapper, resourceTransormerCallback);
         var request = {
             url: '/backend/contacts',
             method: RequestType.GET
@@ -97,7 +97,7 @@ describe('Handler Provider should find handler for http request', function () {
         var handlerPayload = { request: { url: '/backend/contacts', method: 'GET' },
             urlParameters: {},
             parameterMapper: {} };
-        var response = handler.handle(request);
+        var response = dispatcher.dispatch(request);
 
         assert.isTrue(handlers.getContacts.calledWithExactly(handlerPayload, resourceTransormerCallback));
     });

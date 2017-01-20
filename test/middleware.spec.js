@@ -35,17 +35,17 @@ var mockedResourceParameterMapper = {
 };
 var MockedResourceParameterMapper = sinon.stub().returns(mockedResourceParameterMapper);
 
-var handler = function (routes, handlers, resourceParameterMapper, responseTransformerCallback) {
+var dispatcher = function (routes, handlers, resourceParameterMapper, responseTransformerCallback) {
     assert.equal(config.routes, routes);
     assert.equal(config.handlers, handlers);
     assert.equal(mockedResourceParameterMapper, resourceParameterMapper);
     assert.equal(config.responseTransformerCallback, responseTransformerCallback);
 };
 
-var createBackendMiddlewareTest = function (mockHandler) {
+var createBackendMiddlewareTest = function (dispatcherStub) {
     return proxyquire('../src/middleware', {
-        './main.handler': mockHandler,
-        './resource.database': mockedResourceDatabaseConstructor,
+        './dispatcher': dispatcherStub,
+        './database/resource.database': mockedResourceDatabaseConstructor,
         './handlers/resource.parameter.mapper': MockedResourceParameterMapper
     });
 };
@@ -58,13 +58,24 @@ describe('BackendMiddleware function should process requests', function () {
         assert.isTrue(MockedResourceParameterMapper.calledWithExactly(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension));
     });
 
+    it('testConstructor - object should expose clients the helper classes, objects and functions',function(){
+
+        var middlewareFactory = createBackendMiddlewareTest(dispatcher);
+        var middleware = middlewareFactory.create(config);
+
+        assert.strictEqual(middlewareFactory.HTTP_METHODS, require('../src/utils/http.methods'), 'should have made http methods enum available to clients');
+        assert.strictEqual(middlewareFactory.HELPER_FUNCTIONS, require('../src/utils/helpers'), 'should have made helper function available to clients');
+        assert.strictEqual(middlewareFactory.HandlerPayload,require('../src/handlers/handler.payload') , 'should have made http handler payload wrapper available to clients');
+        assert.strictEqual(middlewareFactory.HandlerResponse, require('../src/handlers/handler.response'), 'should have made http response class used for writing to response stream available to clients');
+        assert.strictEqual(middlewareFactory.UrlParser, require('../src/utils/url.parser'), 'should have made url parser class vailable to clients');
+    });
+
     it('testMiddleware(Object config) - No handler matching request url', function () {
-        handler.prototype.handle = function () {
+        dispatcher.prototype.dispatch = function () {
             return undefined;
         };
 
-        var middleware = createBackendMiddlewareTest(handler).create(config);
-
+        var middleware = createBackendMiddlewareTest(dispatcher).create(config);
         var nextSpy = sinon.spy();
 
         middleware({}, {}, nextSpy);
@@ -72,7 +83,7 @@ describe('BackendMiddleware function should process requests', function () {
     });
 
     it('testMiddleware(Object config) - Handler matching request without response headers', function () {
-        handler.prototype.handle = function () {
+        dispatcher.prototype.dispatch = function () {
             return {
                 statusCode: 200,
                 body: {
@@ -81,7 +92,7 @@ describe('BackendMiddleware function should process requests', function () {
             };
         };
 
-        var middleware = createBackendMiddlewareTest(handler).create(config);
+        var middleware = createBackendMiddlewareTest(dispatcher).create(config);
 
         var nextSpy = sinon.spy();
         var res = {
@@ -101,7 +112,7 @@ describe('BackendMiddleware function should process requests', function () {
     });
 
     it('testMiddleware(Object config) - Handler matching request without status code', function () {
-        handler.prototype.handle = function () {
+        dispatcher.prototype.dispatch = function () {
             return {
                 headers: {
                     headerName: 'header'
@@ -112,7 +123,7 @@ describe('BackendMiddleware function should process requests', function () {
             };
         };
 
-        var middleware = createBackendMiddlewareTest(handler).create(config);
+        var middleware = createBackendMiddlewareTest(dispatcher).create(config);
 
         var nextSpy = sinon.spy();
         var res = {
@@ -134,7 +145,7 @@ describe('BackendMiddleware function should process requests', function () {
     });
 
     it('testMiddleware(Object config) - Handler matching request with status code and response headers', function () {
-        handler.prototype.handle = function () {
+        dispatcher.prototype.dispatch = function () {
             return {
                 headers: {
                     headerName: 'header'
@@ -146,7 +157,7 @@ describe('BackendMiddleware function should process requests', function () {
             };
         };
 
-        var middleware = createBackendMiddlewareTest(handler).create(config);
+        var middleware = createBackendMiddlewareTest(dispatcher).create(config);
 
         var nextSpy = sinon.spy();
         var res = {
@@ -168,11 +179,11 @@ describe('BackendMiddleware function should process requests', function () {
     });
 
     it('testMiddleware(Object config) - Handler matching request without status code, response headers or body', function () {
-        handler.prototype.handle = function () {
+        dispatcher.prototype.dispatch = function () {
             return {};
         };
 
-        var middleware = createBackendMiddlewareTest(handler).create(config);
+        var middleware = createBackendMiddlewareTest(dispatcher).create(config);
 
         var nextSpy = sinon.spy();
         var res = {

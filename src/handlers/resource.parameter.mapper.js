@@ -1,4 +1,4 @@
-var helpers = require('../helper');
+var helpers = require('../utils/helpers');
 
 module.exports = function (urlParameterDateFormat, urlParamMapFilePath, urlParamFileExtension) {
 

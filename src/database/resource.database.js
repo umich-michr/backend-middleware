@@ -1,4 +1,4 @@
-var helpers = require('./helper');
+var helpers = require('../utils/helpers');
 var moment = require('moment');
 
 module.exports = function (resourceUrlParameterMapper, dataFilePath, dataFileExtension) {
@@ -31,7 +31,7 @@ module.exports = function (resourceUrlParameterMapper, dataFilePath, dataFileExt
 
             var resourceAttributeValue = helpers.getValue(mapping.attribute, resource);
             if (resourceAttributeValue) {
-                var dateValue = moment(resourceAttributeValue, dateFormat);
+                var dateValue = moment(resourceAttributeValue, dateFormat).unix();
                 helpers.setValue(mapping.attribute, resource, dateValue);
             }
         }

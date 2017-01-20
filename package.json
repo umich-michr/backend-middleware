@@ -1,6 +1,6 @@
 {
   "name": "backend-middleware",
-  "version": "16.01.05",
+  "version": "16.01.20-01",
   "description": "The nodejs server middleware that serves json documents as http resources for user-defined or restful urls. Helps with developing web application html/js clients that will communicate with a backend serving the data user interface needs by mocking the backend.",
   "main": "src/middleware.js",
   "scripts": {
@@ -19,7 +19,12 @@
     "mock-backend",
     "backend",
     "mock-data",
-    "backend-data"
+    "backend-data",
+    "restful-backend",
+    "rest",
+    "restful",
+    "rest-backend",
+    "json-resource-backend"
   ],
   "author": {
     "name": "Michigan Institute for Clinical & Health Research",
@@ -27,13 +32,17 @@
   },
   "contributors": [
     {
-      "name": "Melih Gunal"
+      "name": "Melih Gunal",
+      "email":"gunalmel@umich.edu"
     },
     {
-      "name": "Raden Tonev"
+      "name": "Tianyun Zhang",
+      "email":"tianyunz@umich.edu"
+
     },
     {
-      "name": "Tianyun Zhang"
+      "name": "Raden Tonev",
+      "email":"rtonev@umich.edu"
     }
   ],
   "license": "SEE LICENSE IN LICENSE",
@@ -54,7 +63,6 @@
     "sinon": "^1.17.7"
   },
   "dependencies": {
-    "eslint": "3.13.1",
     "moment": "^2.17.1",
     "underscore": "^1.8.3",
     "uniloc-michr-fork": "^0.3.2"

@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
 var moment = require('moment');
 
-var resourceDao = require('../../src/daos/resource.dao');
+var resourceDao = require('../../../src/database/daos/resource.dao');
 var dateFormat = 'MM/DD/YYYY';
 var people = [
     {

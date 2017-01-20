@@ -1,5 +1,5 @@
 var _ = require('underscore');
-var helpers = require('../../src/helper');
+var helpers = require('../../../src/utils/helpers');
 
 module.exports = {
     matcherPredicate: function (daoQueryParamValue, valueToCompare) {

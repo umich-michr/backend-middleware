@@ -1,8 +1,8 @@
 var assert = require('chai').assert;
 var moment = require('moment');
 
-var helperFunctions = require('../src/helper');
-var defaultDateFormat = 'MM-DD-YYYY';
+var helperFunctions = require('../../src/utils/helpers');
+var testDateFormat = 'MM-DD-YYYY';
 
 describe('Helper functions used to do boring things such as parsing values, slicing dicing strings etc.', function () {
     it('testCastToParamValue(date) - should parse a string matching a date format to date', function () {
@@ -15,7 +15,6 @@ describe('Helper functions used to do boring things such as parsing values, slic
 
         value = '01/01/2017';
         expected = moment(value, 'MM/DD/YYYY');
-
         actual = helperFunctions.castToParamValue(value, 'date', 'MM/DD/YYYY');
         assert.deepEqual(actual, expected, 'The date string matching user specified date format is not converted to date object correctly.');
     });
@@ -48,27 +47,28 @@ describe('Helper functions used to do boring things such as parsing values, slic
     });
 
     it('testAbsolutePath(string) - the path relative to the project root should be transformed to absoule path string', function () {
-        var projectPath = require('path').dirname(__dirname);
+        var path = require('path')
+        var projectPath = path.resolve('.');
 
         var actual = helperFunctions.absolutePath('.', projectPath);
 
-        assert.strictEqual(actual, projectPath + '/', 'The absolute path is not found correctly');
+        assert.strictEqual(actual, projectPath, 'The absolute path is not found correctly');
 
         actual = helperFunctions.absolutePath('./', projectPath);
 
-        assert.strictEqual(actual, projectPath + '/', 'The absolute path is not found correctly');
+        assert.strictEqual(actual, projectPath, 'The absolute path is not found correctly');
 
         actual = helperFunctions.absolutePath('/./', projectPath);
 
-        assert.strictEqual(actual, projectPath + '/', 'The absolute path is not found correctly');
+        assert.strictEqual(actual, projectPath, 'The absolute path is not found correctly');
 
         actual = helperFunctions.absolutePath('././', projectPath);
 
-        assert.strictEqual(actual, projectPath + '/', 'The absolute path is not found correctly');
+        assert.strictEqual(actual, projectPath, 'The absolute path is not found correctly');
 
         actual = helperFunctions.absolutePath('././../.../a///b//.//..//././/./e/.', projectPath);
 
-        assert.strictEqual(actual, projectPath + '/../../a/b/../e', 'The absolute path is not found correctly');
+        assert.strictEqual(actual, path.resolve('./../../a/b/../e'), 'The absolute path is not found correctly');
     });
 
     it('testReadFilesToMap(String path, String fileNameExtension) - should read the json datafiles residing in the path relative to the project root into an object whose keys are found by stripping off fileNameExtension', function () {
@@ -182,7 +182,7 @@ describe('Helper functions used to do boring things such as parsing values, slic
         assert.isFalse(helperFunctions.isDate(1));
         assert.isFalse(helperFunctions.isDate('a'));
 
-        assert.isTrue(helperFunctions.isDate(moment('01-13-1980', defaultDateFormat)));
+        assert.isTrue(helperFunctions.isDate(moment('01-13-1980', testDateFormat)));
     });
 
     it('testSortParamValueArray(Array array) - should sort the array in ascending order taking date objects into consideration', function () {
@@ -207,11 +207,11 @@ describe('Helper functions used to do boring things such as parsing values, slic
 
         assert.deepEqual(actual, ['Jason', 'John', 'jason']);
 
-        var dateArray = [moment('01-12-1981', defaultDateFormat), moment('01-13-1980', defaultDateFormat), moment('01-12-1980', defaultDateFormat)];
+        var dateArray = [moment('01-12-1981', testDateFormat), moment('01-13-1980', testDateFormat), moment('01-12-1980', testDateFormat)];
 
         actual = helperFunctions.sortParamValueArray(dateArray);
 
-        assert.deepEqual(actual, [moment('01-12-1980', defaultDateFormat), moment('01-13-1980', defaultDateFormat), moment('01-12-1981', defaultDateFormat)]);
+        assert.deepEqual(actual, [moment('01-12-1980', testDateFormat), moment('01-13-1980', testDateFormat), moment('01-12-1981', testDateFormat)]);
     });
 
 });

@@ -1,34 +1,33 @@
-var Handler = require('./main.handler');
-var helpers = require('./helper');
-var ResourceDatabase = require('./resource.database');
+var Dispatcher = require('./dispatcher');
+var ResourceDatabase = require('./database/resource.database');
 var ResourceUrlParameterMapper = require('./handlers/resource.parameter.mapper');
 
 var BackendMiddleware = function () {
 
     //Export the class definitions for the clients who would customize the standard behavior so that they can comply with domain object needs.
     // Enumeration for request types supported
-    this.HttpMethod = require('./http.method.js');
+    this.HTTP_METHODS = require('./utils/http.methods.js');
+    this.HELPER_FUNCTIONS = require('./utils/helpers');
     // Constructor function for handlers to use
-    this.HttpHandlerPayload = require('./handlers/handler.payload');
-    this.HttpResponse = require('./handlers/http.response');
-    this.UrlParser = require('./url.parser');
-    this.HelperFunctions = require('./helper');
+    this.HandlerPayload = require('./handlers/handler.payload');
+    this.HandlerResponse = require('./handlers/handler.response');
+    this.UrlParser = require('./utils/url.parser');
 
     this.ResourceUrlParameterMapper = ResourceUrlParameterMapper;
 
     var thisModule = this;
 
-    var resourceUrlParameterMapper, handler, resourceDatabase;
+    var resourceUrlParameterMapper, dispatcher, resourceDatabase;
 
     var init = function(config){
         resourceUrlParameterMapper = new thisModule.ResourceUrlParameterMapper(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
-        handler = new Handler(config.routes, config.handlers, resourceUrlParameterMapper, config.responseTransformerCallback);
+        dispatcher = new Dispatcher(config.routes, config.handlers, resourceUrlParameterMapper, config.responseTransformerCallback);
         resourceDatabase = new ResourceDatabase(resourceUrlParameterMapper, config.dataFiles.path, config.dataFiles.extension);
         resourceDatabase.start();
     }
 
     var writeHeaders = function (statusCode, headers, res) {
-        if (helpers.isResponseHeader(headers)) {
+        if (thisModule.HELPER_FUNCTIONS.isResponseHeader(headers)) {
             for (var headerName in headers) {
                 res.setHeader(headerName, headers[headerName]);
             }
@@ -41,7 +40,7 @@ var BackendMiddleware = function () {
    this.create = function(config){
        init(config);
        return function (req, res, next) {
-           var response = handler.handle(req);
+           var response = dispatcher.dispatch(req);
 
            if (!response) {
                next();
