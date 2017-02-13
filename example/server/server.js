@@ -19,7 +19,8 @@ const config ={
         path: './example/middleware-config/mapping',
         extension: '.map.json'
     },
-    responseTransformerCallback:require('../middleware-config/response.transformer.js')
+    responseTransformerCallback:require('../middleware-config/response.transformer.js'),
+    contextPath: '/'
 };
 
 var bs = require('browser-sync').create();

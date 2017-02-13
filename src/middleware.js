@@ -2,26 +2,35 @@ var Dispatcher = require('./dispatcher');
 var ResourceDatabase = require('./database/resource.database');
 var ResourceUrlParameterMapper = require('./handlers/resource.parameter.mapper');
 
+var _ = require('underscore');
+var bodyParser = require('body-parser');
 var BackendMiddleware = function () {
 
     //Export the class definitions for the clients who would customize the standard behavior so that they can comply with domain object needs.
+
     // Enumeration for request types supported
     this.HTTP_METHODS = require('./utils/http.methods.js');
-    this.HELPER_FUNCTIONS = require('./utils/helpers');
     // Constructor function for handlers to use
     this.HandlerPayload = require('./handlers/handler.payload');
     this.HandlerResponse = require('./handlers/handler.response');
     this.UrlParser = require('./utils/url.parser');
 
-    this.ResourceUrlParameterMapper = ResourceUrlParameterMapper;
+    this.HELPER_FUNCTIONS = require('./utils/helpers');
 
     var thisModule = this;
 
     var resourceUrlParameterMapper, dispatcher, resourceDatabase;
 
     var init = function(config){
-        resourceUrlParameterMapper = new thisModule.ResourceUrlParameterMapper(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
-        dispatcher = new Dispatcher(config.routes, config.handlers, resourceUrlParameterMapper, config.responseTransformerCallback);
+        resourceUrlParameterMapper = new ResourceUrlParameterMapper(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
+        var dispatcherConfig = {
+                routes:config.routes,
+                routeHandlers:config.handlers,
+                parameterMapper:resourceUrlParameterMapper,
+                responseTransformerCallback:config.responseTransformerCallback,
+                contextPath:config.contextPath
+        };
+        dispatcher = new Dispatcher(dispatcherConfig);
         resourceDatabase = new ResourceDatabase(resourceUrlParameterMapper, config.dataFiles.path, config.dataFiles.extension);
         resourceDatabase.start();
     }
@@ -39,6 +48,9 @@ var BackendMiddleware = function () {
 
    this.create = function(config){
        init(config);
+       var jsonBodyParser = bodyParser.json();
+       var urlEncodedBodyParser = bodyParser.urlencoded({extended:true});
+
        return function (req, res, next) {
            var response = dispatcher.dispatch(req);
 

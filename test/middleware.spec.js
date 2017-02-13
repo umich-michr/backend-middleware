@@ -35,11 +35,12 @@ var mockedResourceParameterMapper = {
 };
 var MockedResourceParameterMapper = sinon.stub().returns(mockedResourceParameterMapper);
 
-var dispatcher = function (routes, handlers, resourceParameterMapper, responseTransformerCallback) {
-    assert.equal(config.routes, routes);
-    assert.equal(config.handlers, handlers);
-    assert.equal(mockedResourceParameterMapper, resourceParameterMapper);
-    assert.equal(config.responseTransformerCallback, responseTransformerCallback);
+var dispatcher = function (dispatcherConfig) {
+    assert.equal(config.routes, dispatcherConfig.routes);
+    assert.equal(config.handlers, dispatcherConfig.routeHandlers);
+    assert.equal(mockedResourceParameterMapper, dispatcherConfig.parameterMapper);
+    assert.equal(config.responseTransformerCallback, dispatcherConfig.responseTransformerCallback);
+    assert.equal(config.contextPath, dispatcherConfig.contextPath);
 };
 
 var createBackendMiddlewareTest = function (dispatcherStub) {

@@ -1,6 +1,6 @@
 var routes = {
-    'login': 'POST /backend-middleware/login',
-    'logout': 'GET /backend-middleware/logout'
+    'login': 'POST /login',
+    'logout': 'GET /logout'
 };
 
 module.exports = routes;
