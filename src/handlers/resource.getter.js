@@ -17,10 +17,15 @@ var resourceGetter = function (handlerPayload, responseTransformerCallback) {
     var resource = resourceDao.get(resourceName, daoQueryObject);
 
     if(resource) {
+        console.log(urlParameters);
         if (parameterMapper.isQueryById(resourceName, urlParameters) && resource.length) {
-            resource = resource[0];
+            var resourceById = resource[Number(urlParameters.resourceId)-1];
+            if(resourceById) {
+                handlerResponse = new HandlerResponse(200, httpHeaders, JSON.stringify(resourceById), resourceName);
+            }
+        } else {
+            handlerResponse = new HandlerResponse(200, httpHeaders, JSON.stringify(resource), resourceName);
         }
-        handlerResponse = new HandlerResponse(200, httpHeaders, JSON.stringify(resource), resourceName);
     }
 
     if(responseTransformerCallback) {

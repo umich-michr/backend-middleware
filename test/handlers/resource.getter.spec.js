@@ -52,7 +52,7 @@ describe('Handler to return http resource for GET requests', function () {
         assert.deepEqual(response, expected, 'Resource getter did not return the expected http response');
     });
 
-    it('testResourceGetter(Object handlerPayload, function responseTransformerCallback) - should return http response with resource queried by the query string and/or url params', function () {
+    it('testResourceGetter(Object handlerPayload, function responseTransformerCallback) - should return http response with resource queried by the query string and/or url params if resource is found by id', function () {
         var resourceName = 'people';
         var resourceParamMapper = {
             toResourceDaoQueryObject: function () {
@@ -67,12 +67,39 @@ describe('Handler to return http resource for GET requests', function () {
 
         var handlerPayload = new HandlerPayload({},{
             resourceName: resourceName,
-            resourceId: 5
+            resourceId: 1
         },resourceParamMapper);
 
         var response = resourceGetter(handlerPayload);
 
         var expected = new HandlerResponse(200, httpHeaders, JSON.stringify(people[0]), resourceName);
+
+        assert.deepEqual(response, expected, 'Resource getter did not return the expected http response when resource has to be queried by parameters');
+    });
+
+    it('testResourceGetter(Object handlerPayload, function responseTransformerCallback) - should return 404 http response with resource not found if resource is not found by id', function () {
+        var resourceName = 'people';
+        var resourceParamMapper = {
+            toResourceDaoQueryObject: function () {
+                return {
+                    id: 5
+                };
+            },
+            isQueryById: function () {
+                return true;
+            }
+        };
+
+        var handlerPayload = new HandlerPayload({},{
+            resourceName: resourceName,
+            resourceId: 5
+        },resourceParamMapper);
+
+        var response = resourceGetter(handlerPayload);
+
+        var failedOperationResponse = {operation:'fetch-resource',result:'no matching resource is found'};
+
+        var expected = new HandlerResponse(404, httpHeaders, JSON.stringify(failedOperationResponse), resourceName);
 
         assert.deepEqual(response, expected, 'Resource getter did not return the expected http response when resource has to be queried by parameters');
     });
