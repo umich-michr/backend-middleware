@@ -6,6 +6,7 @@
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --recursive ./test/**",
     "test:watch": "./node_modules/mocha/bin/mocha -w --recursive ./test/**",
+    "debug":"node-debug example/server/server.js example/ true",
     "start":"node example/server/server.js example/ true"
   },
   "repository": {

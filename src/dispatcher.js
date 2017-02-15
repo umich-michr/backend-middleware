@@ -15,7 +15,6 @@ var _ = require('underscore');
  * @constructor
  */
 var Dispatcher = function (config) {
-    console.log('real: ' + JSON.stringify(config));
     this.router = uniloc(_.extend(defaultRoutes, config.routes));
     this.routeHandlers = _.extend(defaultHandlers, config.routeHandlers);
 
@@ -24,9 +23,9 @@ var Dispatcher = function (config) {
         config.contextPath = config.contextPath||'backend-middleware';
         var lookupUrl;
         if(config.contextPath === '/') {
-            lookupUrl = request.url.replace(/^(\.\/|\/|\.$)/, '');
+            lookupUrl = request.url;
         } else {
-            lookupUrl = request.url.replace(/^(\.\/|\/|\.$)/, '').replace(config.contextPath,'');
+            lookupUrl = request.url.replace(config.contextPath,'').replace(/^(\.\/|\/|\.$)/, '');
         }
         var handlerLookup = this.router.lookup(lookupUrl, request.method);
         if (handlerLookup && handlerLookup.name) {

@@ -8,7 +8,7 @@ var httpHeaders = {
 var resourceGetter = function (handlerPayload, responseTransformerCallback) {
     var urlParameters= handlerPayload.urlParameters;
     var parameterMapper = handlerPayload.parameterMapper;
-    var resourceName = urlParameters.resourceName;
+    var resourceName = urlParameters.$resourceName;
 
     var failedOperationResponse = {operation:'fetch-resource',result:'no matching resource is found'};
     var handlerResponse = new HandlerResponse(404, httpHeaders, JSON.stringify(failedOperationResponse), resourceName);
@@ -17,17 +17,11 @@ var resourceGetter = function (handlerPayload, responseTransformerCallback) {
     var resource = resourceDao.get(resourceName, daoQueryObject);
 
     if(resource) {
-        console.log(urlParameters);
         if (parameterMapper.isQueryById(resourceName, urlParameters) && resource.length) {
-            var resourceById = resource[Number(urlParameters.resourceId)-1];
-            if(resourceById) {
-                handlerResponse = new HandlerResponse(200, httpHeaders, JSON.stringify(resourceById), resourceName);
-            }
-        } else {
-            handlerResponse = new HandlerResponse(200, httpHeaders, JSON.stringify(resource), resourceName);
+            resource = resource[0];
         }
+        handlerResponse = new HandlerResponse(200, httpHeaders, JSON.stringify(resource), resourceName);
     }
-
     if(responseTransformerCallback) {
         var transformedResponse = responseTransformerCallback(handlerPayload, handlerResponse);
         handlerResponse = transformedResponse ? transformedResponse : handlerResponse;

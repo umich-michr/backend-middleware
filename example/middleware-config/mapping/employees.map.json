@@ -1,6 +1,6 @@
 {
-    "resourceId":{
-        "attribute":"",
+    "id":{
+        "attribute":"id",
         "type":"numeric",
         "key":true
     },

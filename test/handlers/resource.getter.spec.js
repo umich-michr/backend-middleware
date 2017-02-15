@@ -44,7 +44,7 @@ describe('Handler to return http resource for GET requests', function () {
             }
         };
 
-        var httpPayload = new HandlerPayload({}, {resourceName: resourceName}, resourceParamMapper);
+        var httpPayload = new HandlerPayload({}, {$resourceName: resourceName}, resourceParamMapper);
         var response = resourceGetter(httpPayload);
 
         var expected = new HandlerResponse(200, httpHeaders, JSON.stringify(people), resourceName);
@@ -66,8 +66,8 @@ describe('Handler to return http resource for GET requests', function () {
         };
 
         var handlerPayload = new HandlerPayload({},{
-            resourceName: resourceName,
-            resourceId: 1
+            $resourceName: resourceName,
+            $resourceId: 1
         },resourceParamMapper);
 
         var response = resourceGetter(handlerPayload);
@@ -91,8 +91,8 @@ describe('Handler to return http resource for GET requests', function () {
         };
 
         var handlerPayload = new HandlerPayload({},{
-            resourceName: resourceName,
-            resourceId: 5
+            $resourceName: resourceName,
+            $resourceId: 5
         },resourceParamMapper);
 
         var response = resourceGetter(handlerPayload);
@@ -117,7 +117,7 @@ describe('Handler to return http resource for GET requests', function () {
         };
 
         var urlParameters = {
-            resourceName: resourceName,
+            $resourceName: resourceName,
             page: 'page'
         };
 
@@ -147,7 +147,7 @@ describe('Handler to return http resource for GET requests', function () {
         };
 
         var urlParameters = {
-            resourceName: resourceName,
+            $resourceName: resourceName,
             page: 'page'
         };
 
@@ -175,7 +175,7 @@ describe('Handler to return http resource for GET requests', function () {
         };
 
         var urlParameters = {
-            resourceName: resourceName,
+            $resourceName: resourceName,
             page: 'page'
         };
 

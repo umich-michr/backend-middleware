@@ -1,9 +1,4 @@
 {
-    "resourceId": {
-        "attribute": "id",
-        "key": true,
-        "type": "numeric"
-    },
     "id": {
         "attribute": "id",
         "key": true,

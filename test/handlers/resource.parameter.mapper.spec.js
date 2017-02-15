@@ -13,16 +13,16 @@ describe('Maps the query string and url parameters for a given resource to JSON 
         var resourceParameterMapper = new ResourceParameterMapper(dateFormat, path);
 
         assert.equal(3, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
-        assert.equal(5, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
-        assert.equal(5, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
+        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
+        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['composite-primary-key']).length);
 
         //Test file extension configuration with existing files
         resourceParameterMapper = new ResourceParameterMapper(dateFormat, path, '.url.param.map.json');
 
         assert.equal(3, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
-        assert.equal(5, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
-        assert.equal(5, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
+        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
+        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['composite-primary-key']).length);
 
         //Test file extension configuration with non existing files
@@ -35,8 +35,8 @@ describe('Maps the query string and url parameters for a given resource to JSON 
         var resourceParameterMapper = new ResourceParameterMapper(dateFormat, path);
 
         var urlParametersObject = {
-            'resourceName': 'company-departments',
-            'resourceId': '1',
+            '$resourceName': 'company-departments',
+            '$resourceId': '1',
             'dept-name': 'HR',
             'company-name': 'MICHR',
             'creation-date': ['2017-01-13T00.00.00.000', '2017-01-26T23.59.59.999'],
@@ -50,7 +50,7 @@ describe('Maps the query string and url parameters for a given resource to JSON 
             'creationDate': [moment('2017-01-13T00.00.00.000', 'YYYY-MM-DDThh.mm.ss.sss'), moment('2017-01-26T23.59.59.999', 'YYYY-MM-DDThh.mm.ss.sss')]
         };
 
-        var actual = resourceParameterMapper.toResourceDaoQueryObject(urlParametersObject.resourceName, urlParametersObject);
+        var actual = resourceParameterMapper.toResourceDaoQueryObject(urlParametersObject['$resourceName'], urlParametersObject);
 
         assert.deepEqual(expected, actual, 'The url param/value pairs are not correctly converted to the object that represents the resource.');
 
@@ -68,6 +68,7 @@ describe('Maps the query string and url parameters for a given resource to JSON 
         assert.isFalse(resourceParameterMapper.isQueryById('composite-primary-key', urlParameterObjectWithoutPrimaryKey));
 
         var urlParameterObjectWithPrimaryKey = {
+            $resourceId:5,
             a: 1,
             d: 4,
             b: 2,
@@ -75,5 +76,9 @@ describe('Maps the query string and url parameters for a given resource to JSON 
         };
 
         assert.isTrue(resourceParameterMapper.isQueryById('composite-primary-key', urlParameterObjectWithPrimaryKey));
+    });
+
+    it('extractKeyParameterMap(String resourceName, Object urlQueryParameterObject) - finds the resource attribute that is marked as key and returns all mapping information for it', function () {
+        assert.isTrue(false);
     });
 });
