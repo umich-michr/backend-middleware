@@ -17,7 +17,7 @@ module.exports = function (urlParameterDateFormat, urlParamMapFilePath, urlParam
         }
     };
 
-    this.extractKeyParameterMap = function(resourceName, urlParametersObject){
+    this.extractKeyParameterMap = function(resourceName){
         var resourceUrlParamMap = this.RESOURCE_URL_PARAM_MAP[resourceName];
         if (!resourceUrlParamMap) {
             throw 'No url parameter mapping was found for the resource '+resourceName;
@@ -48,7 +48,7 @@ module.exports = function (urlParameterDateFormat, urlParamMapFilePath, urlParam
 
             var mappedResourceAttributeMap = undefined;
             if(queryParam===RESOURCEID_URL_PARAM_NAME){
-                mappedResourceAttributeMap = this.extractKeyParameterMap(resourceName, urlParametersObject);
+                mappedResourceAttributeMap = this.extractKeyParameterMap(resourceName);
             }
             mappedResourceAttributeMap = !mappedResourceAttributeMap?resourceUrlParamMap[queryParam]:mappedResourceAttributeMap;
 

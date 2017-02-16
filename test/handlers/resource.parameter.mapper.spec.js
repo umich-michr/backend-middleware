@@ -12,18 +12,20 @@ describe('Maps the query string and url parameters for a given resource to JSON 
 
         var resourceParameterMapper = new ResourceParameterMapper(dateFormat, path);
 
-        assert.equal(3, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
+        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['composite-primary-key']).length);
+        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['no-primary-key']).length);
 
         //Test file extension configuration with existing files
         resourceParameterMapper = new ResourceParameterMapper(dateFormat, path, '.url.param.map.json');
 
-        assert.equal(3, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
+        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['composite-primary-key']).length);
+        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['no-primary-key']).length);
 
         //Test file extension configuration with non existing files
         resourceParameterMapper = new ResourceParameterMapper(dateFormat, path, '.url.param.map.jsonx');
@@ -79,6 +81,27 @@ describe('Maps the query string and url parameters for a given resource to JSON 
     });
 
     it('extractKeyParameterMap(String resourceName, Object urlQueryParameterObject) - finds the resource attribute that is marked as key and returns all mapping information for it', function () {
-        assert.isTrue(false);
+        var resourceParameterMapper = new ResourceParameterMapper(dateFormat, path);
+
+
+        assert.throws(resourceParameterMapper.extractKeyParameterMap.bind(resourceParameterMapper, 'unmapped-resource-name'),
+            'No url parameter mapping was found for the resource unmapped-resource-name');
+
+        assert.throws(resourceParameterMapper.extractKeyParameterMap.bind(resourceParameterMapper, 'composite-primary-key'),
+            'When url is used to query for resource we do not support composite keys for resources.');
+
+        assert.throws(resourceParameterMapper.extractKeyParameterMap.bind(resourceParameterMapper, 'no-primary-key'),
+            'When url parameter is used to query for resource using id the url object mapping file should have specified a resource attribute to be key by setting mapping attribute key to true');
+
+
+        var expected = {
+            "attribute": "id",
+            "key": true,
+            "type": "numeric"
+        };
+        var actual = resourceParameterMapper.extractKeyParameterMap('company-departments');
+
+        assert.deepEqual(expected, actual);
+
     });
 });

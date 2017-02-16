@@ -1,0 +1,15 @@
+{
+    "a": {
+        "attribute": "a"
+    },
+    "b": {
+        "attribute": "b"
+    },
+    "c": {
+        "attribute": "c"
+    },
+    "d": {
+        "attribute": "d",
+        "type": "numeric"
+    }
+}
