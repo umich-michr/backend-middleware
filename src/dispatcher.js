@@ -11,7 +11,7 @@ var _ = require('underscore');
  *  routeHandlers An object that maps route handling function names to functions.
  *  parameterMapper An object that transforms url parameters and url query string parameters to an object dao could use to query in memory database
  *  responseTransformerCallback An optional user provided callback method that will transform the http response returned by the route handler to any other form before being returned to client. It should accept resource to be returned and url parameter value map to apply custom logic to transfor it into the other form the callback function will return.
- *  contextPath (Optional - default backedn-middleware) The url path appearing after host name/IP address in the url specifying the context of the application. (Application Root Url)
+ *  contextPath (Optional - default backend-middleware) The url path appearing after host name/IP address in the url specifying the context of the application. (Application Root Url)
  * @constructor
  */
 var Dispatcher = function (config) {
