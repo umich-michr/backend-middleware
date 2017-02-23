@@ -18,14 +18,29 @@ var Dispatcher = function (config) {
     this.router = uniloc(_.extend(defaultRoutes, config.routes));
     this.routeHandlers = _.extend(defaultHandlers, config.routeHandlers);
 
+    var contextPath = config.contextPath ||'backend-middleware';
+    if (contextPath ==='/'){
+        //Replace multiple preceding slash with single
+        contextPath = contextPath.replace(/^\/+/, '/');
+    }
+    else {
+        //Replace multiple preceding slash with none and add a trailing slash
+        contextPath = contextPath.replace(/^\/+/, '') + '/';
+    }
+
     this.dispatch = function (request) {
 
-        config.contextPath = config.contextPath||'backend-middleware';
+        var url = request.url.replace(/^\/+/, '/');
+
+        if (contextPath!='/' && url.indexOf(contextPath) !== 1){
+            return undefined;
+        }
+
         var lookupUrl;
-        if(config.contextPath === '/') {
-            lookupUrl = request.url;
+        if(contextPath === '/') {
+            lookupUrl = url;
         } else {
-            lookupUrl = request.url.replace(config.contextPath,'').replace(/^(\.\/|\/|\.$)/, '');
+            lookupUrl = url.replace(contextPath,'').replace(/^(\.\/|\/|\.$)/, '');
         }
         var handlerLookup = this.router.lookup(lookupUrl, request.method);
         if (handlerLookup && handlerLookup.name) {

@@ -11,9 +11,9 @@ module.exports = {
                     return (valueToCompare >= daoQueryParamValue[0] && valueToCompare <= daoQueryParamValue[1]);
                 };
             }
-            else if (helpers.isDate(valueToCompare)) {
+            else if (helpers.isDate(daoQueryParamValue[0])) {
                 return function () {
-                    return valueToCompare.isBetween(daoQueryParamValue[0], daoQueryParamValue[1]);
+                    return  valueToCompare >= daoQueryParamValue[0].toDate().getTime() && valueToCompare<=daoQueryParamValue[1].toDate().getTime();
                 };
             }
             else {
@@ -24,10 +24,11 @@ module.exports = {
         }
 
         if (_.isArray(daoQueryParamValue) && daoQueryParamValue.length > 2) {
-            if (helpers.isDate(valueToCompare)) {
+
+            if (helpers.isDate(daoQueryParamValue[0])) {
                 return function () {
                     for (var daoQueryParamValueIndex in daoQueryParamValue) {
-                        if (daoQueryParamValue[daoQueryParamValueIndex].isSame(valueToCompare)) {
+                        if (daoQueryParamValue[daoQueryParamValueIndex].toDate().getTime()===valueToCompare) {
                             return true;
                         }
                     }
@@ -42,6 +43,9 @@ module.exports = {
         }
 
         return function () {
+            if (helpers.isDate(daoQueryParamValue)) {
+                return daoQueryParamValue.toDate().getTime()===valueToCompare;
+            }
             return _.isEqual(daoQueryParamValue, valueToCompare);
         };
     },

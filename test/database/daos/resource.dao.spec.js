@@ -11,7 +11,7 @@ var people = [
         company: {
             name: 'APPLE'
         },
-        dob: moment('01/01/1980', dateFormat)
+        dob: moment('01/01/1980', dateFormat).toDate().getTime()
     },
     {
         id: 2,
@@ -20,7 +20,7 @@ var people = [
         company: {
             name: 'APPLE'
         },
-        dob: moment('05/01/1980', dateFormat)
+        dob: moment('05/01/1980', dateFormat).toDate().getTime()
     },
     {
         id: 3,
@@ -29,7 +29,7 @@ var people = [
         company: {
             name: 'GM'
         },
-        dob: moment('12/31/1970', dateFormat)
+        dob: moment('12/31/1970', dateFormat).toDate().getTime()
     },
     {
         id: 4,
@@ -38,7 +38,7 @@ var people = [
         company: {
             name: 'GM'
         },
-        dob: moment('08/12/1990', dateFormat)
+        dob: moment('08/12/1990', dateFormat).toDate().getTime()
     },
     {
         id: 5,
@@ -47,7 +47,7 @@ var people = [
         company: {
             name: 'TESLA'
         },
-        dob: moment('11/01/1985', dateFormat)
+        dob: moment('11/01/1985', dateFormat).toDate().getTime()
     },
     {
         id: 6,
@@ -56,7 +56,7 @@ var people = [
         company: {
             name: 'APPLE'
         },
-        dob: moment('01/01/1980', dateFormat)
+        dob: moment('01/01/1980', dateFormat).toDate().getTime()
     }
 ];
 var globalDB = global.DATABASE;

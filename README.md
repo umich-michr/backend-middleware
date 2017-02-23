@@ -42,7 +42,9 @@ app.use(backendMiddleware.create(config));
 The two configuration parameters you have to specify at a minimum are your data file and resource to url parameter mapping.  
 
 _**dataFiles**_ specifies the location and type of files containing resource representations in JSON. The dataFiles can be viewed as your database which can be queried by the url expressions.    
-From the config above if the following was in <project_root_folder>/example/middleware-config/data/employees.json then https://..../backend-middleware/employees would return what was in that file as json. _The file names should be the same as the resource names you would expect in the url using the extension you specified in the config object._  
+From the config above if the following was in <project_root_folder>/example/middleware-config/data/employees.json then https://..../backend-middleware/employees would return what was in that file as json. _The file names should be the same as the resource names you would expect in the url using the extension you specified in the config object._
+
+* **When the data files are read, if the mapping file designates an attribute to be of date type then those values will be converted to long numeric date representations using moment.js library and the date format specified in the config (_urlParameterDateFormat_) then stored.**
 ```javascript
 [
     {
@@ -81,6 +83,8 @@ From the config above if the following was in <project_root_folder>/example/midd
 _**resourceUrlParamMapFiles**_ specifies location and type of files containing the info about which url parameter or url query string parameter maps to which resource attribute. The keys of the map are the query parameter names. The values are objects that specifies the resource attribute name, type and if it is a primary key.   
 If the resource you are querying is inside another object, the attribute name is the JSON path to that resource attribute using dot notation. _The file names should be the same as the resource names you would expect in the url using the extension you specified in the config object._  
 Given the data file example above the following can be in <project_root_folder>/example/middleware-config/mapping/employees.map.json file
+
+When type attribute is not specified it defaults to "string". The types other than string are: "numeric", "date" 
 ```javascript
 {
     "employee-id":{
@@ -217,7 +221,11 @@ npm start
 * get all employees: https://localhost:3000/employees  
 * get one employee by id: https://localhost:3000/employees/1 (you can also try id 2, 3 and 4)
 * get employees by query string: https://localhost:3000/employees?last-name='Doe'&boss-id=10 (check the data file: middleware-config/data/employees.json for more details)
-* get employees by query string (server side pagination): https://localhost:3000/employees?last-name='Doe'&boss-id=10&page=1&page-size=5
+* get employees by query string (server side pagination): https://localhost:3000/employees?last-name='Doe'&boss-id=10&page=1&page-size=5  
+
+&nbsp;&nbsp;&nbsp;&nbsp; **If the same query string parameter is specified multiple times, by default numeric and date parameters uses "between" operator if parameter is repeated twice or uses "in" operator.**
+* get employees whose birth date is between 1970-12-31 and 1965-01-01: https://localhost:3000/employees?dob=1970-12-31&dob=1965-01-01
+* get employees whose birth date is one of 1970-12-31, 1967-11-01, 1978-01-01: https://localhost:3000/employees?dob=1970-12-31&dob=1965-01-01&dob=1978-01-01  
 * login (need to use something like Postman to send a POST request, valid usernames and passwords are in example/middleware-config/users.json): https://localhost:3000/login
 
 ## Files  

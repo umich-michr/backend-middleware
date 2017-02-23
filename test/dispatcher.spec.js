@@ -49,7 +49,8 @@ describe('Dispatcher should route the request from middleware to the correct req
         var dispatcherConfig = {
             routes:routes,
             routeHandlers:handlers,
-            parameterMapper:parameterMapper
+            parameterMapper:parameterMapper,
+            contextPath: '/'
         };
         var dispatcher = new Dispatcher(dispatcherConfig);
 
@@ -68,7 +69,7 @@ describe('Dispatcher should route the request from middleware to the correct req
     });
 
     it('testGetHandler(Object request) - Default handler matching the request url and method', function () {
-        var contextPath = 'testContextPath';
+        var contextPath = '//testContextPath';
 
         var dispatcherConfig = {
             routes:routes,
@@ -79,11 +80,11 @@ describe('Dispatcher should route the request from middleware to the correct req
         var dispatcher = new Dispatcher(dispatcherConfig);
 
         var request = {
-            url: '/getAll/someres',
+            url: '///testContextPath/getAll/someres',
             method: RequestType.GET
         };
 
-        var handlerPayload = { request: { url: '/getAll/someres', method: 'GET' },
+        var handlerPayload = { request: { url: '///testContextPath/getAll/someres', method: 'GET' },
             urlParameters: { resource: 'someres' },
             parameterMapper: {} };
 
@@ -93,7 +94,13 @@ describe('Dispatcher should route the request from middleware to the correct req
     });
 
     it('testGetHandler(Object request) - No handler matching the request url or method', function () {
-        var dispatcher = new Dispatcher(routes, handlers, parameterMapper);
+        var dispatcherConfig = {
+            routes:routes,
+            routeHandlers:handlers,
+            parameterMapper:parameterMapper
+        };
+
+        var dispatcher = new Dispatcher(dispatcherConfig);
 
         var request = {
             url: '/backend/contacts/attr/name/john?pass=b',
@@ -132,7 +139,8 @@ describe('Dispatcher should route the request from middleware to the correct req
             routes:routes,
             routeHandlers:handlers,
             parameterMapper:parameterMapper,
-            responseTransformerCallback: responseTransformerCallback
+            responseTransformerCallback: responseTransformerCallback,
+            contextPath: '/'
         };
         var dispatcher = new Dispatcher(dispatcherConfig);
 
@@ -148,6 +156,32 @@ describe('Dispatcher should route the request from middleware to the correct req
         var response = dispatcher.dispatch(request);
 
         assert.isTrue(handlers.getContacts.calledWithExactly(handlerPayload, dispatcherConfig.responseTransformerCallback));
+    });
+
+    it('testGetHandler(Object request) - When request url does not start with user specified context path and user specified contextPath is not "/" then request should not be dispatched to middleware handlers', function () {
+        var responseTransformerCallback = sinon.spy();
+
+        var dispatcherConfig = {
+            routes:routes,
+            routeHandlers:handlers,
+            parameterMapper:parameterMapper,
+            responseTransformerCallback: responseTransformerCallback,
+            contextPath: '//notMatching'
+        };
+        var dispatcher = new Dispatcher(dispatcherConfig);
+
+        var request = {
+            url: '/notMatchingA/contacts',
+            method: RequestType.GET
+        };
+
+        //uniloc lookup response: { name: handlerName, options: {query and/or url parameters} }
+        var handlerPayload = { request: { url: '/contacts', method: 'GET' },
+            urlParameters: {},
+            parameterMapper: {} };
+        var response = dispatcher.dispatch(request);
+
+        assert.isUndefined(response);
     });
 
 });

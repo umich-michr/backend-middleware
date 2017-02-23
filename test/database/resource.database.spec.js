@@ -7,7 +7,7 @@ var ResourceDatabase = require('../../src/database/resource.database');
 var ResourceParameterMapper = require('../../src/handlers/resource.parameter.mapper');
 var resourceParameterMapper = new ResourceParameterMapper(dateFormat, mappingFilesPath);
 
-var expectedDobArr = [315550800,347086800,-288471600];
+var expectedDobArr = [315550800000,347086800000,-288471600000];
 
 describe('In memory json database start up tests', function () {
     it('testStart() - Using default file extension should read the json datafiles residing in the data path into in memory resource database and convert date fields to long numeric date time representation', function () {
