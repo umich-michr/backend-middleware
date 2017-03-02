@@ -47,7 +47,7 @@ describe('Helper functions used to do boring things such as parsing values, slic
     });
 
     it('testAbsolutePath(string) - the path relative to the project root should be transformed to absoule path string', function () {
-        var path = require('path')
+        var path = require('path');
         var projectPath = path.resolve('.');
 
         var actual = helperFunctions.absolutePath('.', projectPath);
@@ -157,9 +157,33 @@ describe('Helper functions used to do boring things such as parsing values, slic
                 b: {
                     c: 1
                 }
-            }
+            },
+            d:[
+                {
+                    e:[
+                        {f:10,g:100},
+                        {f:20,g:200}
+                    ]
+                },
+                {
+                    e:[
+                        {f:20,g:200},
+                        {f:30,g:300},
+                        {f:40,g:400}
+                    ]
+                },
+                {
+                    e:[
+                        {f:50,g:500}
+                    ]
+                },
+                {
+                    e:[
+                        {h:20,g:200}
+                    ]
+                }
+            ]
         };
-
         var actual = helperFunctions.getValue('a.b.c', object);
 
         assert.equal(actual, 1);
@@ -173,6 +197,14 @@ describe('Helper functions used to do boring things such as parsing values, slic
         actual = helperFunctions.getValue('x.b', object);
 
         assert.isUndefined(actual);
+
+        actual = helperFunctions.getValue('d.e', object);
+
+        assert.deepEqual(actual, [[{f:10,g:100},{f:20,g:200}],[{f:20,g:200},{f:30,g:300},{f:40,g:400}],[{f:50,g:500}],[{h:20,g:200}]]);
+
+        actual = helperFunctions.getValue('d.e.f', object);
+
+        assert.deepEqual(actual, [[10,20],[20,30,40],[50],[]]);
     });
 
     it('testIsDate(object) - should return if the input is of date type', function () {

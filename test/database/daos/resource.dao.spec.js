@@ -11,7 +11,16 @@ var people = [
         company: {
             name: 'APPLE'
         },
-        dob: moment('01/01/1980', dateFormat).toDate().getTime()
+        dob: moment('01/01/1980', dateFormat).toDate().getTime(),
+        externalOrganizations: [{
+                complicated: [
+                    {id: 100, name: 'org100'},
+                    {id: 101, name: 'org101'},
+                    {id: 200, name: 'org200'},
+                    {id: 301, name: 'org301'}
+                ]
+            }
+        ]
     },
     {
         id: 2,
@@ -20,7 +29,15 @@ var people = [
         company: {
             name: 'APPLE'
         },
-        dob: moment('05/01/1980', dateFormat).toDate().getTime()
+        dob: moment('05/01/1980', dateFormat).toDate().getTime(),
+        externalOrganizations: [{
+            complicated: [
+                {id: 400, name: 'org400'},
+                {id: 500, name: 'org500'}
+
+            ]
+        }
+        ]
     },
     {
         id: 3,
@@ -29,7 +46,20 @@ var people = [
         company: {
             name: 'GM'
         },
-        dob: moment('12/31/1970', dateFormat).toDate().getTime()
+        dob: moment('12/31/1970', dateFormat).toDate().getTime(),
+        externalOrganizations: [{
+            complicated: [
+                {id: 600, name: 'org600'},
+                {id: 800, name: 'org800'}
+            ]
+        },
+            {
+                complicated: [
+                    {id: 900, name: 'org900'},
+                    {id: 700, name: 'org700'}
+                ]
+            }
+        ]
     },
     {
         id: 4,
@@ -38,7 +68,21 @@ var people = [
         company: {
             name: 'GM'
         },
-        dob: moment('08/12/1990', dateFormat).toDate().getTime()
+        dob: moment('08/12/1990', dateFormat).toDate().getTime(),
+        externalOrganizations: [{
+            complicated: [
+                {id: 500, name: 'org500'}
+            ]
+        },
+            {
+                complicated: [
+                    {id: 900, name: 'org900'},
+                    {id: 1000, name: 'org1000'},
+                    {id: 700, name: 'org700'},
+                    {id: 1100, name: 'org1100'}
+                ]
+            }
+        ]
     },
     {
         id: 5,
@@ -47,7 +91,8 @@ var people = [
         company: {
             name: 'TESLA'
         },
-        dob: moment('11/01/1985', dateFormat).toDate().getTime()
+        dob: moment('11/01/1985', dateFormat).toDate().getTime(),
+        externalOrganizations: [{complicated: []}]
     },
     {
         id: 6,
@@ -56,7 +101,17 @@ var people = [
         company: {
             name: 'APPLE'
         },
-        dob: moment('01/01/1980', dateFormat).toDate().getTime()
+        dob: moment('01/01/1980', dateFormat).toDate().getTime(),
+        externalOrganizations: []
+    },
+    {
+        id: 7,
+        firstName: 'Solomon',
+        lastName: 'Islands',
+        company: {
+            name: 'MICHR'
+        },
+        dob: moment('01/01/1965', dateFormat).toDate().getTime()
     }
 ];
 var globalDB = global.DATABASE;
@@ -110,6 +165,20 @@ describe('DAO to query resources in the in-memory JSON object db', function () {
         actual = resourceDao.get(resourceName, singleValueQuery);
 
         assert.deepEqual(actual, expected, 'Single value query did not return the correct set of people');
+
+    });
+
+    it('testGet(String resourceName, Object daoQueryParam) - should be able to query through array attribute values', function () {
+        var resourceName = 'people';
+
+        var deepQuery = {
+            'externalOrganizations.complicated.id': 700
+        };
+
+        var expected = [people[2], people[3]];
+        var actual = resourceDao.get(resourceName, deepQuery);
+
+        assert.deepEqual(actual, expected, 'Deep query did not return the correct set of people');
 
     });
 

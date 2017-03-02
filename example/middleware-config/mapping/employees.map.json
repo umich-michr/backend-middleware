@@ -24,5 +24,9 @@
     },
     "team-name":{
         "attribute":"boss.team.name"
+    },
+    "supervisors-employees-id":{
+        "attribute":"supervisors.employees.id",
+        "type":"numeric"
     }
 }

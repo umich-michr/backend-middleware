@@ -109,6 +109,21 @@ function HelperFunctions() {
                 return obj[arr[0]];
             }
             var firstAttribute = arr.shift();
+
+            if(_.isArray(obj[firstAttribute])){
+                var arrayObject = obj[firstAttribute];
+                var resultArray = [];
+                for(var arrayObjectIndex in arrayObject) {
+                    var arrayObjectAttributeValue = getObjValue(arr, arrayObject[arrayObjectIndex]);
+                    if(arrayObjectAttributeValue) {
+                        resultArray.push(arrayObjectAttributeValue);
+                    }
+                }
+
+                arr.unshift(firstAttribute);
+                return resultArray;
+            }
+
             if (!obj[firstAttribute]) {
                 return;
             }

@@ -14,5 +14,9 @@
     "parent-dob": {
         "attribute": "parent.dob",
         "type": "date"
+    },
+    "external-organization-id":{
+        "attribute": "externalOrganizations.id",
+        "type": "numeric"
     }
 }

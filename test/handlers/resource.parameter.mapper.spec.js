@@ -13,7 +13,7 @@ describe('Maps the query string and url parameters for a given resource to JSON 
         var resourceParameterMapper = new ResourceParameterMapper(dateFormat, path);
 
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
-        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
+        assert.equal(5, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['composite-primary-key']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['no-primary-key']).length);
@@ -22,7 +22,7 @@ describe('Maps the query string and url parameters for a given resource to JSON 
         resourceParameterMapper = new ResourceParameterMapper(dateFormat, path, '.url.param.map.json');
 
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP).length);
-        assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
+        assert.equal(5, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['people']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['company-departments']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['composite-primary-key']).length);
         assert.equal(4, Object.keys(resourceParameterMapper.RESOURCE_URL_PARAM_MAP['no-primary-key']).length);

@@ -60,7 +60,23 @@ module.exports = {
         return _.filter(resources, function (resource) {
             var match = true;
             for (var key in daoQueryParam) {
-                match = match && thisModule.matcherPredicate(daoQueryParam[key], helpers.getValue(key, resource))();
+                var resourceAttributeValue = helpers.getValue(key, resource);
+
+                if(_.isArray(resourceAttributeValue)) {
+
+                    resourceAttributeValue = _.flatten(resourceAttributeValue);
+
+                    var arrayElementMatch = false;
+                    for(var attributeValueIndex in resourceAttributeValue) {
+                        arrayElementMatch = arrayElementMatch || thisModule.matcherPredicate(daoQueryParam[key], resourceAttributeValue[attributeValueIndex])();
+                        if(arrayElementMatch) {
+                            break;
+                        }
+                    }
+                    match = match && arrayElementMatch;
+                } else {
+                    match = match && thisModule.matcherPredicate(daoQueryParam[key], resourceAttributeValue)();
+                }
             }
             return match;
         });
