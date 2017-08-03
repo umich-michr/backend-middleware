@@ -1,13 +1,13 @@
 {
   "name": "backend-middleware",
-  "version": "17.03.02",
+  "version": "18.08.03",
   "description": "The nodejs server middleware that serves json documents as http resources for user-defined or restful urls. Helps with developing web application html/js clients that will communicate with a backend serving the data user interface needs by mocking the backend.",
   "main": "src/middleware.js",
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --recursive ./test/**",
     "test:watch": "./node_modules/mocha/bin/mocha -w --recursive ./test/**",
-    "debug":"node-debug example/server/server.js example/ true",
-    "start":"node example/server/server.js example/ true"
+    "debug": "node-debug example/server/server.js example/ true",
+    "start": "node example/server/server.js example/ true"
   },
   "repository": {
     "type": "git",
@@ -34,16 +34,15 @@
   "contributors": [
     {
       "name": "Melih Gunal",
-      "email":"gunalmel@umich.edu"
+      "email": "gunalmel@umich.edu"
     },
     {
       "name": "Tianyun Zhang",
-      "email":"tianyunz@umich.edu"
-
+      "email": "tianyunz@umich.edu"
     },
     {
       "name": "Raden Tonev",
-      "email":"rtonev@umich.edu"
+      "email": "rtonev@umich.edu"
     }
   ],
   "license": "SEE LICENSE IN LICENSE",

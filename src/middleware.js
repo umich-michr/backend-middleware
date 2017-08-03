@@ -33,7 +33,7 @@ var BackendMiddleware = function () {
         dispatcher = new Dispatcher(dispatcherConfig);
         resourceDatabase = new ResourceDatabase(resourceUrlParameterMapper, config.dataFiles.path, config.dataFiles.extension);
         resourceDatabase.start();
-    }
+    };
 
     var writeHeaders = function (statusCode, headers, res) {
         if (thisModule.HELPER_FUNCTIONS.isResponseHeader(headers)) {

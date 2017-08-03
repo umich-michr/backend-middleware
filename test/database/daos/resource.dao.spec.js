@@ -256,4 +256,74 @@ describe('DAO to query resources in the in-memory JSON object db', function () {
 
         assert.deepEqual(actual, expected, 'Did not return the correct person corresponding to the id and the first name');
     });
+
+    it('testPost(resourceName, newResourceObject) - should return the new id of the saved object', function() {
+        var resourceName = 'people';
+        var newResourceObject = {
+            id: 0,
+            firstName: 'new first name',
+            lastName: 'new last name',
+            company: {
+                name: 'new company'
+            },
+            dob: moment('01/01/2000', dateFormat).toDate().getTime()
+        };
+        var actual = resourceDao.post(resourceName, newResourceObject);
+
+        assert.deepEqual(actual, 8, 'Did not return the correct new id of the saved object');
+
+        var idQuery = {
+            id: 8
+        };
+
+        var expected = [people[7]];
+
+        actual = resourceDao.get(resourceName, idQuery);
+
+        assert.deepEqual(actual, expected, 'Did not return the correct person corresponding to id');
+    });
+
+    it('testPost(resourceName, newResourceObject) - create a new resource and should return the new id of the saved object', function() {
+        var resourceName = 'random';
+        var newResourceObject = {
+            id: 0,
+            random: {
+                id: 1,
+                param: 'random'
+            }
+        };
+        var actual = resourceDao.post(resourceName, newResourceObject);
+
+        assert.deepEqual(actual, 1, 'Did not return the correct new id of the saved object');
+
+        var idQuery = {
+            id: 1
+        };
+
+        var expected = [{
+            id: 1,
+            random: {
+                id: 1,
+                param: 'random'
+            }
+        }];
+
+        actual = resourceDao.get(resourceName, idQuery);
+
+        assert.deepEqual(actual, expected, 'Did not return the correct person corresponding to id');
+    });
+
+    it('testPost(resourceName, newResourceObject) - return null if the id of the newResourceObject is not 0', function() {
+        var resourceName = 'random';
+        var newResourceObject = {
+            id: 1,
+            random: {
+                id: 1,
+                param: 'random'
+            }
+        };
+        var actual = resourceDao.post(resourceName, newResourceObject);
+
+        assert.deepEqual(actual, null, 'Should return null when new id is not 0');
+    });
 });
