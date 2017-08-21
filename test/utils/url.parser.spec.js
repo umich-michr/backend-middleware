@@ -35,7 +35,7 @@ var queryString = url.slice(url.lastIndexOf('?') + 1);
 
 describe('Query String Parser reads the url to build objects the dao could use to query document database', function () {
     beforeEach(function(){
-        sinon.stub(helperFunctions, 'castToParamValue', function (value) {
+        sinon.stub(helperFunctions, 'castToParamValue').callsFake(function (value) {
             if (value === startDateString) {
                 return startDate;
             }
