@@ -81,5 +81,23 @@ module.exports = {
             return match;
         });
 
+    },
+    post: function(resourceName, newResourceObject) {
+        if(newResourceObject.id !== 0) {
+            return null;
+        }
+        var resource = global.DATABASE[resourceName];
+
+        if(resource && _.isArray(resource)) {
+            var maxId = _.max(resource, function(resourceObject){ return resourceObject.id; }).id;
+            newResourceObject.id = maxId + 1;
+            resource.push(newResourceObject);
+        } else {
+            global.DATABASE[resourceName] = [];
+            newResourceObject.id = 1;
+            global.DATABASE[resourceName].push(newResourceObject);
+        }
+
+        return newResourceObject.id;
     }
 };
