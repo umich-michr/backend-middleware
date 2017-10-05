@@ -20,6 +20,9 @@ function HelperFunctions() {
         case 'date':
             var dateFormat = dateFormatForDateValues || this.defaultDateFormat;
             return moment(value, dateFormat);
+        case 'boolean':
+            var n = Number(value);
+            return Number.isFinite(n) ? !!n : value.toLowerCase() === 'true';
         default:
             return value;
         }
