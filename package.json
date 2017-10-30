@@ -65,6 +65,6 @@
     "body-parser": "1.17.2",
     "moment": "^2.17.1",
     "underscore": "^1.8.3",
-    "uniloc-michr-fork": "^0.3.3"
+    "uniloc-michr-fork": "https://github.com/michr-cri/backend-middleware#master"
   }
 }
