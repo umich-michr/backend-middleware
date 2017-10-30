@@ -1,4 +1,4 @@
-var uniloc = require('uniloc-michr-fork');
+var uniloc = require('./uniloc');
 var defaultRoutes = require('./config/default.routes');
 var defaultHandlers = require('./config/default.handlers');
 var HandlerPayload = require('./handlers/handler.payload');
