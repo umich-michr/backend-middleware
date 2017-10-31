@@ -29,13 +29,13 @@ HandlerPayload.prototype = Object.create(helpers, {
 
 	getAttribute: {
 		value(param) {
-			return this.attrMap[param].attribute;
+			return this.getParameterInfo(param).attribute;
 		},
 	},
 
 	getParameterInfo: {
 		value(param) {
-			return this.attrMap[param];
+			return this.attrMap[param] || {attribute: param};
 		},
 	},
 
