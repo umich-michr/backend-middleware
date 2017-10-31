@@ -52,10 +52,10 @@ module.exports = {
     get: function (resourceName, daoQueryParam) {
         var thisModule = this;
         if (!daoQueryParam || Object.keys(_.omit(daoQueryParam, 'resourceName')).length === 0) {
-            return global.DATABASE[resourceName];
+            return global.DATABASE.getResource(resourceName);
         }
 
-        var resources = global.DATABASE[resourceName];
+        var resources = global.DATABASE.getResource(resourceName);
 
         return _.filter(resources, function (resource) {
             var match = true;

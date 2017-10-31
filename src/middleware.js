@@ -1,5 +1,6 @@
 var Dispatcher = require('./dispatcher');
 var ResourceDatabase = require('./database/resource.database');
+var ComputedProperties = require('./database/computed.properties');
 var ResourceUrlParameterMapper = require('./handlers/resource.parameter.mapper');
 
 var _ = require('underscore');
@@ -33,7 +34,11 @@ var BackendMiddleware = function () {
         dispatcher = new Dispatcher(dispatcherConfig);
         resourceDatabase = new ResourceDatabase(resourceUrlParameterMapper, config.dataFiles.path, config.dataFiles.extension);
         resourceDatabase.start();
-    };
+			  const computedProperties = new ComputedProperties(config.computedProperties);
+        global.DATABASE_COMPUTED_PROPERTIES = computedProperties;
+        global.DATABASE.getResource = resourceName =>
+          computedProperties.hydrateResources(resourceName, global.DATABASE[resourceName] || []);
+		};
 
     var writeHeaders = function (statusCode, headers, res) {
         if (thisModule.HELPER_FUNCTIONS.isResponseHeader(headers)) {
