@@ -46,7 +46,7 @@ var Dispatcher = function (config) {
         if (handlerLookup && handlerLookup.name) {
             var requestHandler = this.routeHandlers[handlerLookup.name];
             if (requestHandler) {
-                var handlerPayload = new HandlerPayload(request, handlerLookup.options, config.parameterMapper);
+                var handlerPayload = new HandlerPayload(request, handlerLookup, config.parameterMapper);
                 return requestHandler(handlerPayload, config.responseTransformerCallback);
             }
         }
