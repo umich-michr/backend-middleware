@@ -13,7 +13,6 @@ var resourcePoster = function (handlerPayload) {
     var failedOperationResponse = {operation:'post-resource',result:'can not save the new resource'};
     var handlerResponse = new HandlerResponse(500, httpHeaders, JSON.stringify(failedOperationResponse), resourceName);
 
-    console.log(handlerPayload.request);
     var newResourceId = resourceDao.post(resourceName, newResourceObject);
 
     if(newResourceId) {

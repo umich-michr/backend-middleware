@@ -22,7 +22,8 @@ function HandlerPayload(request, handlerLookup, parameterMapper) {
 HandlerPayload.prototype = Object.create(helpers, {
 	getParamOrDefault: {
 		value(param) {
-			return this.urlParameters[param] || this.getParameterInfo(param).defaultValue;
+			const value = this.urlParameters[param] || this.getParameterInfo(param).defaultValue;
+			return value && this.parseValue(param, value);
 		},
 	},
 
