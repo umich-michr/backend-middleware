@@ -1,12 +1,80 @@
-# Why would you need backend-middleware?
+# About
 
-When this module is added as middleware to any nodejs http server it intercepts http requests and returns responses configured by the user. Then you can easily build and test your UI application making http requests to get data to bind to.  
+Backend-middleware is a lightweight middleware for express.js meant to be used to mock
+a RESTful JSON web service so that a front-end can be developed rapidly and independently 
+of the server.  
 
 ## Example use case
 
-Your application UI needs a json response after making a request to: https://mycompany.com/myAppContextPath/employees/1223  
-You will need to write a server application that will respond to an HTTP request and return an http resource in json format implied by the url. That is sometimes too much work. However, if you are already building your UI and testing it using nodejs then you can use backend-middleware with a basic configuration to return a json document (object) for the urls such as https://mycompany.com/myAppContextPath/employees (identifies employees list), https://mycompany.com/myAppContextPath/employees/1223 (identifies employee with id 1223).
+Suppose you need to consume a JSON api along the lines of:
 
+    https://mycompany.com/app-context/resource-name/:id
+    https://mycompany.com/app-context/resounce-name?attribute=value&other-attribute=otherValue
+    https://mycompany.com/app-context/other-resource-name
+
+which return JSON responses along the lines of:
+
+    {
+        "id": 1,
+        "attribute": "value",
+        "otherAttribute": "otherValue",
+        "embeddedObject": {
+            "anotherAttribute": "differentValue"
+        }
+    }
+
+You can use backend-middleware to quickly bring up such a service by dumping JSON files
+into a single directory:
+
+    backend-middleware-config/data/resource-name.json:
+    [
+        {
+            "id": 1,
+            "attribute": "value",
+            "otherAttribute": "otherValue",
+            "embeddedObject": {
+                "anotherAttribute": "differentValue"
+            }
+        },
+        ....
+    ]
+    
+    backend-middleware-config/mapping/resource-name.map.json
+    {
+        "id": {
+            "key": true
+        }
+    }
+
+And telling your express server to use backend-middleware:
+
+```javascript
+const backendMiddleware = require('backend-middleware');
+
+// ...
+
+const backendMiddlewareConfig = {
+    dataFiles: {
+        path: './backend-middleware-config/data',
+        extension: '.json'
+    },
+    resourceUrlParamMapFiles: {
+        path: './backend-middleware-config/mapping',
+        extension: '.map.json'
+    }
+};
+
+// ...
+
+app.use(backendMiddleware.create(backendMiddlewareConfig));
+
+// ...
+```
+
+Backend-middleware implements common conventions in RESTful JSON APIs, 
+so querying a collection resource will return you a list of all resources in that collection,
+filtering a collection can be done with query parameters matching the name of the attributes 
+of the resource, and you can get individual resources by id.
 
 # Quick Start
 
@@ -41,7 +109,45 @@ app.use(backendMiddleware.create(config));
 ````
 The two configuration parameters you have to specify at a minimum are your data file and resource to url parameter mapping.  
 
-_**dataFiles**_ specifies the location and type of files containing resource representations in JSON. The dataFiles can be viewed as your database which can be queried by the url expressions.    
+## Configuration
+
+```javascript
+const config = {
+	dataFiles: {
+		path, 
+		extension: '.json'
+	},
+	resourceUrlParamMapFiles: {
+		path, 
+		extension: '.url.param.map.json'
+	},
+	urlParameterDateFormat: 'YYYY-MM-DDThh.mm.ss.sss',
+	computedProperties,
+	routes,
+	handlers,
+	responseTransformerCallback,
+	contextPath: 'backend-middleware',
+};
+```
+
+Option  | Explanation
+------- | ------------
+dataFiles.path | The path to the directory containing the JSON files to read.
+dataFiles.extension | The extension of the files.
+resourceUrlParamMapFiles | The JSON files that describe how URL parameters are mapped to JSON resource attributes, along with other things, such as defaults, and how to deserialize the parameter value.
+resourceUrlParamMapFiles.path | The path to a directory of url parameter mapping files
+resourceUrlParamMapFiles.extension | The extension of files to read in that directory
+urlParameterDateFormat | The date format to read date strings in the data files, if the parameter mapping file says the attribute has a type of `'date'`.  This uses the moment syntax. 
+computedProperties | A Javascript object describing computed properties for all resources.
+routes | A Javascript object describing the routes.  There are certain default routes.
+handlers | A Javascript object describing the handlers for routes.  There are default handlers for default routes.
+responseTransformerCallback | A Javascript function which transforms the response from the middleware.
+contextPath | The url path prefix that the middleware will handle.  
+
+
+### dataFiles
+
+`dataFiles` specifies the location and type of files containing resource representations in JSON. The dataFiles can be viewed as your database which can be queried by the url expressions.    
 From the config above if the following was in <project_root_folder>/example/middleware-config/data/employees.json then https://..../backend-middleware/employees would return what was in that file as json. _The file names should be the same as the resource names you would expect in the url using the extension you specified in the config object._
 
 * **When the data files are read, if the mapping file designates an attribute to be of date type then those values will be converted to long numeric date representations using moment.js library and the date format specified in the config (_urlParameterDateFormat_) then stored.**
@@ -80,7 +186,10 @@ From the config above if the following was in <project_root_folder>/example/midd
 ]
 ```
 
-_**resourceUrlParamMapFiles**_ specifies location and type of files containing the info about which url parameter or url query string parameter maps to which resource attribute. The keys of the map are the query parameter names. The values are objects that specifies the resource attribute name, type and if it is a primary key.   
+### resourceUrlParamMapFiles
+
+`resourceUrlParamMapFiles` specifies location and type of files containing the info about which url parameter or url 
+query string parameter maps to which resource attribute. The keys of the map are the query parameter names. The values are objects that specifies the resource attribute name, type and if it is a primary key.   
 If the resource you are querying is inside another object, the attribute name is the JSON path to that resource attribute using dot notation. _The file names should be the same as the resource names you would expect in the url using the extension you specified in the config object._  
 Given the data file example above the following can be in <project_root_folder>/example/middleware-config/mapping/employees.map.json file
 
@@ -128,9 +237,40 @@ The default context path when making calls to the backend-middleware is /backend
 
 See the example app for more details about the mapping files under example/middleware-config/mapping
 
-# Other configurations  
+### routes and handlers
 
-## routes and handlers  
+Routes are specified by a Javascript object, mapping the route name to a string
+describing the url to match, in the uniloc.js format.  For instance:
+
+```javascript
+var routes = {
+    'getEmployees': 'GET /:parentResourceName/:departmentId/:childResourceName',
+    'postEmployees': 'POST /:parentResourceName/:departmentId/:childResourceName'
+};
+module.exports = routes;
+```
+
+Handlers are specified in the same way, but the route name is instead mapped to a handler function:
+
+
+```javascript
+var routes = {
+    'getEmployees': function(handlerPayload, responseTransformerCallback) {
+    },
+    'postEmployees': function(handlerPayload, responseTransformerCallack) {
+    }    	
+};
+module.exports = routes;
+```
+
+The `handlerPayload` looks like: 
+
+```javascript
+const handlerPayload = {
+	urlParameters: {parentResourceName, departmentId, childResourceName},
+	parameterMapper,
+};
+```
 
 Good number of times you will need to add your own routes and handlers because the default behavior of the backend-middleware will not be responding to different use cases.  
 For example, the request to get a list employees is https://mycompany.com/myAppContextPath/departments/5/employees. The default behavior is that "departments" is a resource name so there should be a corresponding data and url parameter mapping file and 5 is the id of the json object to be returned from the file and "employees" will be ignored unless you can change the deafult url handling behavior.   
