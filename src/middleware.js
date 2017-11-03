@@ -69,4 +69,16 @@ var BackendMiddleware = function () {
    };
 };
 
+BackendMiddleware.prototype.transformers = {
+	sort: require('./transformers/sort'),
+	pagination: require('./transformers/pagination'),
+};
+
+BackendMiddleware.prototype.handlers = {
+  getter: require('./handlers/resource.getter'),
+  poster: require('./handlers/resource.poster')
+};
+
+BackendMiddleware.prototype.dao = require('./database/daos/resource.dao');
+
 module.exports = new BackendMiddleware();

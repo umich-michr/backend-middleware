@@ -322,7 +322,7 @@ const handlerReturnValue = {
   	headerName: 'headerValue'
   	// ...
   },
-  body: { /* json */ }	
+  body: 'body string'
 };
 ```
 
