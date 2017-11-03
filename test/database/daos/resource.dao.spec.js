@@ -4,6 +4,13 @@ var moment = require('moment');
 var resourceDao = require('../../../src/database/daos/resource.dao');
 var ComputedProperties = require('../../../src/database/computed.properties');
 
+function setFrom(strings) {
+	const set = {};
+	strings.forEach(s => set[s] = true);
+	return set;
+}
+
+
 var dateFormat = 'MM/DD/YYYY';
 var people = [
 	{
@@ -129,6 +136,51 @@ describe('DAO to query resources in the in-memory JSON object db', function () {
 	afterEach(function () {
 		global.DATABASE = globalDB;
 		global.DATABASE_COMPUTED_PROPERTIES = globalComputedProperties;
+	});
+
+	it('can constrain on computed properties', () => {
+		global.DATABASE_COMPUTED_PROPERTIES = new ComputedProperties({
+			people: {
+				worksInCarIndustry(person) {
+					return !!person.company && ['GM', 'TESLA'].includes(person.company.name);
+				}
+			}
+		});
+
+		const people = resourceDao.get('people', {worksInCarIndustry: true});
+		assert.equal(people.length, 3);
+		assert.deepEqual(setFrom(people.map(p => p.firstName)), setFrom(['Jason', 'Macy', 'Mike']));
+	});
+
+	it('can constrain on computed properties built on other computed properties', () => {
+		global.DATABASE_COMPUTED_PROPERTIES = new ComputedProperties({
+			people: {
+				worksInCarIndustry(person) {
+					return !!person.company && ['GM', 'TESLA'].includes(person.company.name);
+				},
+
+				worksElsewhere(person) {
+					return !this.worksInCarIndustry(person);
+				}
+			}
+		});
+
+		const people = resourceDao.get('people', {worksElsewhere: true});
+		assert.equal(people.length, 4);
+		assert.deepEqual(setFrom(people.map(p => p.firstName)), setFrom(['John', 'Jane', 'Freddy', 'Solomon']));
+	});
+
+	it('exposes computed properties in the resource', () => {
+		global.DATABASE_COMPUTED_PROPERTIES = new ComputedProperties({
+			people: {
+				fullName(person) {
+					return `${person.firstName} ${person.lastName}`;
+				}
+			}
+		});
+
+		const [person] = resourceDao.get('people', {id: 1});
+		assert.deepEqual(person.fullName, 'John Doe');
 	});
 
 	it('testGet(String resourceName, Object daoQueryParam) - should return the whole object collection as resource when no daoQueryParam is specified', function () {
