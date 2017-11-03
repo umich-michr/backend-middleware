@@ -145,97 +145,147 @@ responseTransformerCallback | A Javascript function which transforms the respons
 contextPath | The url path prefix that the middleware will handle.  
 
 
-### dataFiles
+### dataFiles and urlParameterDateFormat
 
-`dataFiles` specifies the location and type of files containing resource representations in JSON. The dataFiles can be viewed as your database which can be queried by the url expressions.    
-From the config above if the following was in <project_root_folder>/example/middleware-config/data/employees.json then https://..../backend-middleware/employees would return what was in that file as json. _The file names should be the same as the resource names you would expect in the url using the extension you specified in the config object._
+Data files contain the JSON of the resources the backend-middleware serves.  The file names have the form:
 
-* **When the data files are read, if the mapping file designates an attribute to be of date type then those values will be converted to long numeric date representations using moment.js library and the date format specified in the config (_urlParameterDateFormat_) then stored.**
-```javascript
-[
-    {
-        "id":99,
-        "firstName":"John",
-        "lastName":"Doe",
-        "birthDate": "1970-12-31",
-        "boss":{
-            "id":1001,
-            "firstName":"Jackie",
-            "lastName":"Chan",
-            "team":{
-                "id":100,
-                "name":"Awesome"
+    ${dataFiles.path}${resourceName}${dataFiles.extension}
+
+So, the file name determines the resource name, 
+which is used through the rest of the middleware configuration.
+
+When the data files are read, if the mapping file (see below) designates that an attribute has type `date`,
+then that attribute will be parsed as a date using the format specified in the config parameter `urlParameterDateFormat`
+using the moment.js library, and then stored as a unix millisecond timestamp (and hence will be served as
+a number).
+
+
+    backend-middleware-config/data/people.json:
+    [
+        {
+            "id":99,
+            "firstName":"John",
+            "lastName":"Doe",
+            "birthDate": "1970-12-31",
+            "boss":{
+                "id":1001,
+                "firstName":"Jackie",
+                "lastName":"Chan",
+                "team":{
+                    "id":100,
+                    "name":"Awesome"
+                }
+            }
+        },
+        {
+            "id":100,
+            "firstName":"Jane",
+            "lastName":"Doe",
+            "birthDate": "1965-11-21",
+            "boss":{
+                "id":1001,
+                "firstName":"Jackie",
+                "lastName":"Chan",
+                "team":{
+                    "id":100,
+                    "name":"Awesome"
+                }
             }
         }
-    },
-    {
-        "id":100,
-        "firstName":"Jane",
-        "lastName":"Doe",
-        "birthDate": "1965-11-21",
-        "boss":{
-            "id":1001,
-            "firstName":"Jackie",
-            "lastName":"Chan",
-            "team":{
-                "id":100,
-                "name":"Awesome"
-            }
-        }
-    }
-]
-```
+    ]
 
 ### resourceUrlParamMapFiles
 
-`resourceUrlParamMapFiles` specifies location and type of files containing the info about which url parameter or url 
-query string parameter maps to which resource attribute. The keys of the map are the query parameter names. The values are objects that specifies the resource attribute name, type and if it is a primary key.   
-If the resource you are querying is inside another object, the attribute name is the JSON path to that resource attribute using dot notation. _The file names should be the same as the resource names you would expect in the url using the extension you specified in the config object._  
-Given the data file example above the following can be in <project_root_folder>/example/middleware-config/mapping/employees.map.json file
+`resourceUrlParamMapFiles` specifies location of the url parameter map files.  The file names read have the format:
 
-When type attribute is not specified it defaults to "string". The types other than string are: "numeric", "date" 
-```javascript
-{
-    "employee-id":{
-        "attribute":"id",
-        "type":"numeric",
-        "key":true
-    },
-    "last-name":{
-        "attribute":"lastName"
-    },
-   
-    "boss-id":{
-        "attribute":"boss.id",
-        "type":"numeric"
+    ${resourceUrlParamMapFiles.path}${resourceName}${resourceUrlParamMapFiles.extension}
+
+Hence, their file names match up with the resource names specified by the data files.
+
+These files specify information about url parameters, and how they map to the resource attributes,
+along with implicitly specifying the type of the resource attributes.  They have the following form:
+
+    /resource-name.url.param.map.json
+    {
+        "some-url-param": {
+            "attribute": "someResourceAttribute",
+            "type": "numeric",
+            "key": false,
+            "defaultValue": "a value",
+            "defaultOrder": "asc"
+        },
+        "another-url-param": {
+            "attribute": "some.attribute.in.objects.embedded.in.the.resource"
+        }
     }
-}
-```  
 
-### Dissecting the Url Parameter to Resource Attribute Mapping
-Now the backend-middleware would:  
-return the first employee in the data file (as a single object) when the url ../backend-middleware/employees/99 is called.  
-return the second employee in the data file (in an array) when the url ../backend-middleware/employees?last-name=Doe&boss-id=1001 is called.
+All properties are optional.  
 
+`defaultOrder` is only used by the sorting response transformer.
 
-The key for the mapping will be the url parameter i.e. 'last-name' and 'boss-id'. The value of 'last-name' will be like. When type is not specified it defaults to string. 
+`defaultValue` is only used by the `HandlerPayload.getParamOrDefault`; see below. 
+
+`type` can be one of:
+
+- `boolean`
+- `numeric`
+- `date`
+- `string` (default)
+
+`attribute` defines the attribute _path_ on the resource that the url parameter is associated with.
+The default getter handler uses this to constrain which resources to return.
+
+`key` defines the attribute to be a part of the database-like primary key of the resource.
+The default getter handler notices if the query uses the primary key url parameters to fetch a resource,
+and if so, returns a single object, instead of a list of matching objects.
+
+    backend-middleware-config/mapping/people.url.param.json:
+    {
+        "employee-id":{
+            "attribute":"id",
+            "type":"numeric",
+            "key":true
+        },
+        "last-name":{
+            "attribute":"lastName"
+        },
+       
+        "boss-id":{
+            "attribute":"boss.id",
+            "type":"numeric"
+        }
+    }
+
+### computedProperties
+
+The `computedProperties` is a Javascript object mapping resource names to objects of
+computed properties.  Computed properties are given the resource, and must return
+the value of the computed property named by the name of the function.  The `this` 
+psuedo-variable of the function is set to the object holding the computed properties,
+so that computed properties can call each other.  For example:
+
 ```javascript
-"last-name": {
-    "attribute":"lastName"
+const computedProperties = {
+	employee: {
+		fullName(employee) {
+			return `${employee.firstName} ${employee.lastName}`
+		},
+		isCurrent(employee) {
+			return Date.now() < employee.appointment.endDate; 
+		},
+		isOnPayroll(employee) {
+			return employee.appointment.isPaid && this.isCurrent(employee);
+		}
+	},
+	otherResource: {
+		otherProp() { /* ... */ }
+	}
 }
 ```
-Since "boss-id" refers to an attribute inside another object, we need to use JSON path as the attribute such as "boss.id".  
-```javascript
-"boss-id":{
-    "attribute":"boss.id",
-    "type":"numeric"
-}
-```
 
-
-The default context path when making calls to the backend-middleware is /backend-middleware. The context path is configurable, you can specify any other string for it. (See the configuration section of the documentation)
-
-See the example app for more details about the mapping files under example/middleware-config/mapping
+The values of computed properties are assigned onto the resource itself, and they are available
+when querying the database, and can be referenced in the resourceUrlParamMap files as an 
+"attribute."
 
 ### routes and handlers
 
@@ -257,96 +307,145 @@ Handlers are specified in the same way, but the route name is instead mapped to 
 var routes = {
     'getEmployees': function(handlerPayload, responseTransformerCallback) {
     },
-    'postEmployees': function(handlerPayload, responseTransformerCallack) {
+    'postEmployees': function(handlerPayload, responseTransformerCallback) {
     }    	
 };
 module.exports = routes;
+```
+
+The handlers must return a response object that looks like:
+
+```javascript
+const handlerReturnValue = { 
+  statusCode: 400,
+  headers: {
+  	headerName: 'headerValue'
+  	// ...
+  },
+  body: { /* json */ }	
+};
 ```
 
 The `handlerPayload` looks like: 
 
 ```javascript
 const handlerPayload = {
+	request: ExpressRequest,
 	urlParameters: {parentResourceName, departmentId, childResourceName},
 	parameterMapper,
 };
 ```
 
-Good number of times you will need to add your own routes and handlers because the default behavior of the backend-middleware will not be responding to different use cases.  
-For example, the request to get a list employees is https://mycompany.com/myAppContextPath/departments/5/employees. The default behavior is that "departments" is a resource name so there should be a corresponding data and url parameter mapping file and 5 is the id of the json object to be returned from the file and "employees" will be ignored unless you can change the deafult url handling behavior.   
-In order to handle requests like this, you need to write your own routes and handlers and specify _**routes**_ and _**handlers**_ in the config by requiring them when creating backend-middleware object.  
-An example of _**routes**_ to handle the request may be like  
+The handler payload has a number of helper methods available.  See the section below on it.
+
+The `urlParameters` are those bound from the url in the handlers file, along 
+with all query parameters.  For example, if the url pattern for a handler was
+`GET /resources/:id`, and the url that matched it was `/resources/18?page=2`,
+then `urlParameters` would be:
 
 ```javascript
-var routes = {
-    'getEmployees': 'GET /:parentResourceName/:departmentId/:childResourceName'
-};
-module.exports = routes;
+const urlParameters = {
+    id: '18',
+    page: '2'
+}
 ```
 
-An example of _**handlers**_ that handles the routes will be like
+### HandlerPayload
+
+The handler payload has a number of helper methods, but they require the handler payload
+to know about the resource name this request is meant to access.  There is nothing that requires
+a single request to only access a single resource, however since that is typical, 
+the handler payload gives you some shortcuts if that is the case.
+
+You can specify the resource name to the handler payload by setting on the object itself:
 
 ```javascript
-var handlers = {
-    getEmployees: function(handlerPayload, responseTransformerCallback) {
-        //handlerPayLoad is created by the constructor function below
-        /*
-        function(request,urlParameters,parameterMapper){
-              // The request object passed by nodejs to backend-middleware
-              this.request = request; 
-              
-              // url parameter/query string parameter name value map extracted from the url. 
-              //e.g.: From the example above you can access departmentId from the url using handlerPayLoad.urlParameters.departmentId
-              this.urlParameters = urlParameters;
-              
-              //Instance of ResourceParameterMapper (resource.parameter.mapper.js) which reads url parameter mapper files to return a json object good for matching with the json objects specified in the corresponding data file.
-              this.parameterMapper = parameterMapper;                
-        };
-        */
+handlerPayload.resourceName = 'myResource';
+```
 
-        // your handler implementation.....
-        var urlParameters= handlerPayload.urlParameters;
-        var parameterMapper = handlerPayload.parameterMapper;
-        var parentResourceName = urlParameters.parentResourceName;
-        var childResourceName = urlParameters.childResourceName;
-        // All data files are read into an object whose keys are the data file names without extension and values are 
-        // what's inside the file. That object is globally exported for it to be available to your code so that you can 
-        // easily write data access objects or directly query. (global.DATABASE)
-        var allParentObjects = global.DATABASE[parentResourceName];
-       
-        var dataQueryingObject = handlerPayload.parameterMapper.toResourceDaoQueryObject(parentResourceName,handlerPayload.urlParameters);
-        if(handlerPayload.parameterMapper.isQueryById(parentResourceName,handlerPayload.urlParameters)){
-            /*
-             * .... using allParentObjects and dataQueryingObject find the object matching (result) and return result[childResourceName]
-             */
-        }
-        else{
-            throw new 'No id specified for the resource.';
-        }
-    }
-};
-module.exports = handlers;
-```  
+However, it will infer it in two cases:
 
-## contextPath  
-Specifies the context path after your server domain. _**The default value is backend-middleware**_. This will replace 'myAppContextPath' in our examples in this README  
-## urlParameterDateFormat  
-Specifies the date format in your url parameters. **_The default value is 'YYYY-MM-DDThh.mm.ss.sss'**_  Because we are using moment.js to do date/time conversions, you can lookup date/time formats from [moment.js web site](https://momentjs.com/).
-For example, if your request is https://mycompany.com/myAppContextPath/department/employees?dob='1975/02/01', you need to set _**urlParameterDateFormat**_ to 'YYYY/MM/DD' so that the date parameter will be extracted correctly.  
-## responseTransformerCallback  
-Specifies a callback to process the response before returning to the client side. This will allow you to transform the response any way you want. See the example app for a server side pagination example. The function signature for a response transformer is the same as handler signature:
+1. If there are at least two words in the route name, the resource name is taken as the first word.
+1. Otherwise, it is the value of the url parameter named `$resourceName`.
+
+An example of the first case:
+
 ```javascript
-function (handlerPayload, handlerResponse) {
-// For the explanation of handlerPayload see the handle example above
-//handlerResponse is specified by the constructor function in handler.response.js as below(The response that would eventually be returned by backend middleware):
-/*
-function (httpStatusCode, httpHeadersMap, body, resourceName) {
-    this.statusCode = httpStatusCode;
-    this.headers = httpHeadersMap;
-    this.body = body;
-    this.resourceName = resourceName;
+const routes = {
+    'employees GET': 'GET /employees',
+    'employees PATCH appointment': 'PATCH /employees/:id/appointment',
+    'employees PUT': 'PUT /employees/:id'
 };
-*/
+```
+
+and an example of the second case:
+
+```javascript
+const routes = {
+    'getPublicResource': 'GET /public/:$resourceName',
+    'getProtectedResource': 'GET /secure/:$resourceName',
+};
+```
+
+#### HandlerPayload helper methods
+
+Once the resource name is set or inferred, the following handler methods will work:
+
+MethodName | Description
+--- | ---
+getParamOrDefault(urlParameterName) | Return the value of a parameter, defaulting it based on the mapping file, and parsing it based on its type if the mapping file. 
+getAttribute(urlParameterName) | Return the attribute of the resource that corresponds to the parameter, or itself if there is no explicit mapping.
+getParameterInfo(urlParameterName) | Return the JSON object for the parameter name, direct from the mapping file.
+parseValue(attributeName, value) | Parse the value for the attribute (not url parameter), according to its type.
+setValue(attributeName, resource, value) | Set the value of the attribute on the resource, parsing the value based on the type of the attribute.
+
+### contextPath  
+
+Specifies the context path after your server domain.
+
+### Default Handlers
+
+There are default handlers for getting and posting a resource.  The getter takes a resource like:
+
+    GET https://localhost:3000/${contextPath}/${resourceName}?first-name=Phil
+
+And return a response like:
+
+    [{
+        firstName: "Phil",
+        lastName: "Smith",
+        ...
+    }, {
+        firstName: "Phil",
+        lastName: "Johnson",
+        ...
+    }]
+
+It uses the url parameter mapping to find a matching attribute for each url parameter provided, and 
+filters the JSON objects in the data file to only those that match the provided values (after parsing
+the url parameter values based on the parameter type).
+
+Similarly, the following works:
+
+    GET https://localhost:3000/${contextPath}/${resourceName}/87
+    
+which would return a JSON object of the resource with id equal to 87.
+
+Finally, posting to the resource with a JSON object would add that object to the (in-memory) database.
+The data files themselves are never changed.  
+
+Computed properties can be queried in this way, and they are returned in the response of any request.
+
+### responseTransformerCallback  
+
+This config parameter specifies a callback to process the response before returning to the client side. 
+This will allow you to transform the response any way you want. 
+See the example app for a server side pagination example. 
+The function signature for a response transformer is as follows:
+
+```javascript
+const responseTransformerCallback = function (handlerPayload, handlerResponse) {
+	return handlerResponse;
 }
 ```
 
