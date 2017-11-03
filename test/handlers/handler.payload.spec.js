@@ -73,6 +73,18 @@ describe('Handler Payload', () => {
 		};
 
 		const handlerPayload = new HandlerPayload({}, handlerLookup, parameterMapper);
-		assert.equal(handlerPayload.getParamOrDefault('sort-by'), 'first-name');// see defaults.url.param.map.json
+		assert.equal(handlerPayload.getParamOrDefault('sort-by'), 'first-name');
 	});
+
+	it('defaults parameter values to undefined if there\'s no default', () => {
+		const parameterMapper = new makeParameterMapper(dateFormat, path);
+		const handlerLookup = {
+			name: 'people getter',
+			options: {},
+		};
+
+		const handlerPayload = new HandlerPayload({}, handlerLookup, parameterMapper);
+		assert.equal(handlerPayload.getParamOrDefault('other-option'), undefined);
+
+	})
 });

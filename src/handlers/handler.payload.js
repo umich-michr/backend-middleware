@@ -15,8 +15,6 @@ function HandlerPayload(request, handlerLookup, parameterMapper) {
 	this.resourceName = findResourceName(handlerLookup);
 	this.parameterMapper = parameterMapper;
 	this.attrMap = parameterMapper.RESOURCE_URL_PARAM_MAP[this.resourceName] || {};
-	this.defaults = parameterMapper.RESOURCE_URL_PARAM_MAP.defaults || {};
-	this.defaults = this.defaults[this.resourceName] || {};
 	this.URL_PARAMETER_DATE_FORMAT = parameterMapper.URL_PARAMETER_DATE_FORMAT;
 	this.getQueryObjFromParams = (params) => parameterMapper.toResourceDaoQueryObject(this.resourceName, params);
 }
@@ -24,7 +22,7 @@ function HandlerPayload(request, handlerLookup, parameterMapper) {
 HandlerPayload.prototype = Object.create(helpers, {
 	getParamOrDefault: {
 		value(param) {
-			return this.urlParameters[param] || this.defaults[param];
+			return this.urlParameters[param] || this.getParameterInfo(param).defaultValue;
 		},
 	},
 

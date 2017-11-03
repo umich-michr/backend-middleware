@@ -18,5 +18,8 @@
     "external-organization-id":{
         "attribute": "externalOrganizations.id",
         "type": "numeric"
+    },
+    "sort-by": {
+        "defaultValue": "first-name"
     }
 }
