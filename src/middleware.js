@@ -36,8 +36,6 @@ var BackendMiddleware = function () {
         resourceDatabase.start();
 			  const computedProperties = new ComputedProperties(config.computedProperties);
         global.DATABASE_COMPUTED_PROPERTIES = computedProperties;
-        global.DATABASE.getResource = resourceName =>
-          computedProperties.hydrateResources(resourceName, global.DATABASE[resourceName] || []);
 		};
 
     var writeHeaders = function (statusCode, headers, res) {

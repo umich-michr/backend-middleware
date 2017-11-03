@@ -2,6 +2,7 @@ var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
 var RequestType = require('../src/utils/http.methods.js');
+var makeParameterMapper = require('../src/handlers/resource.parameter.mapper');
 
 var defaultRoutes;
 var defaultHandlers;
@@ -37,7 +38,7 @@ describe('Dispatcher should route the request from middleware to the correct req
             getContacts: sinon.stub()
         };
 
-        parameterMapper = {};
+        parameterMapper = makeParameterMapper();
 
         Dispatcher = proxyquire('../src/dispatcher', {
             './config/default.routes': defaultRoutes,
@@ -65,7 +66,7 @@ describe('Dispatcher should route the request from middleware to the correct req
 
         var response = dispatcher.dispatch(request);
 
-        assert.isTrue(defaultHandlers.getResource.calledWithExactly(handlerPayload, undefined));
+        assert.isTrue(defaultHandlers.getResource.calledWithMatch(handlerPayload, undefined));
     });
 
     it('testGetHandler(Object request) - Default handler matching the request url and method', function () {
@@ -90,7 +91,7 @@ describe('Dispatcher should route the request from middleware to the correct req
 
         var response = dispatcher.dispatch(request);
 
-        assert.isTrue(defaultHandlers.getResource.calledWith(handlerPayload, undefined));
+        assert.isTrue(defaultHandlers.getResource.calledWithMatch(handlerPayload, undefined));
     });
 
     it('testGetHandler(Object request) - No handler matching the request url or method', function () {
@@ -133,7 +134,7 @@ describe('Dispatcher should route the request from middleware to the correct req
     });
 
     it('testGetHandler(Object request) - Dispatcher should dispatch the handler payload to the handler matching the url and http method.', function () {
-        var responseTransformerCallback = sinon.spy();
+        var responseTransformerCallback = {x:11};
 
         var dispatcherConfig = {
             routes:routes,
@@ -150,12 +151,16 @@ describe('Dispatcher should route the request from middleware to the correct req
         };
 
         //uniloc lookup response: { name: handlerName, options: {query and/or url parameters} }
-        var handlerPayload = { request: { url: '/contacts', method: 'GET' },
+        var handlerPayload = {
+            request: { url: '/contacts', method: 'GET' },
             urlParameters: {},
-            parameterMapper: {} };
+            parameterMapper: {}
+        };
         var response = dispatcher.dispatch(request);
 
-        assert.isTrue(handlers.getContacts.calledWithExactly(handlerPayload, dispatcherConfig.responseTransformerCallback));
+        sinon.assert.calledWithMatch(handlers.getContacts,
+          handlerPayload,
+          dispatcherConfig.responseTransformerCallback);
     });
 
     it('testGetHandler(Object request) - When request url does not start with user specified context path and user specified contextPath is not "/" then request should not be dispatched to middleware handlers', function () {

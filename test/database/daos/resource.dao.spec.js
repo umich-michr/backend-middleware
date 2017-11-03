@@ -2,6 +2,8 @@ var assert = require('chai').assert;
 var moment = require('moment');
 
 var resourceDao = require('../../../src/database/daos/resource.dao');
+var ComputedProperties = require('../../../src/database/computed.properties');
+
 var dateFormat = 'MM/DD/YYYY';
 var people = [
     {
@@ -115,15 +117,18 @@ var people = [
     }
 ];
 var globalDB = global.DATABASE;
+var globalComputedProperties = global.DATABASE_COMPUTED_PROPERTIES;
 
 describe('DAO to query resources in the in-memory JSON object db', function () {
     beforeEach(function () {
         global.DATABASE = {};
         global.DATABASE['people'] = people;
+        global.DATABASE_COMPUTED_PROPERTIES = new ComputedProperties({});
     });
 
     afterEach(function () {
         global.DATABASE = globalDB;
+        global.DATABASE_COMPUTED_PROPERTIES = globalComputedProperties;
     });
 
     it('testGet(String resourceName, Object daoQueryParam) - should return the whole object collection as resource when no daoQueryParam is specified', function () {

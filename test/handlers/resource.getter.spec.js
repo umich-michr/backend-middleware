@@ -1,7 +1,9 @@
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
+var _ = require('lodash');
 
+var makeParameterMapper = require('../../src/handlers/resource.parameter.mapper');
 var HandlerResponse = require('../../src/handlers/handler.response');
 var HandlerPayload = require('../../src/handlers/handler.payload');
 
@@ -26,6 +28,16 @@ var resourceGetter = proxyquire('../../src/handlers/resource.getter', {
     '../database/daos/resource.dao': resourceDao
 });
 
+function makeHandlerLookup(options){
+    return {name: 'defaultHandlerName', options};
+}
+
+function mockParameterMapper(changes) {
+  const mapper = makeParameterMapper();
+  _.assign(mapper, changes);
+  return mapper;
+}
+
 describe('Handler to return http resource for GET requests', function () {
 
     var httpHeaders = {
@@ -35,16 +47,16 @@ describe('Handler to return http resource for GET requests', function () {
     it('testResourceGetter(Object handlerPayload, function responseTransformerCallback) - should return http response with resource corresponding to resource name', function () {
         var resourceName = 'people';
 
-        var resourceParamMapper = {
+        var resourceParamMapper = mockParameterMapper({
             toResourceDaoQueryObject: function () {
                 return null;
             },
             isQueryById: function () {
                 return false;
             }
-        };
+        });
 
-        var httpPayload = new HandlerPayload({}, {$resourceName: resourceName}, resourceParamMapper);
+        var httpPayload = new HandlerPayload({}, makeHandlerLookup({$resourceName: resourceName}), resourceParamMapper);
         var response = resourceGetter(httpPayload);
 
         var expected = new HandlerResponse(200, httpHeaders, JSON.stringify(people), resourceName);
@@ -54,7 +66,7 @@ describe('Handler to return http resource for GET requests', function () {
 
     it('testResourceGetter(Object handlerPayload, function responseTransformerCallback) - should return http response with resource queried by the query string and/or url params if resource is found by id', function () {
         var resourceName = 'people';
-        var resourceParamMapper = {
+        var resourceParamMapper = mockParameterMapper({
             toResourceDaoQueryObject: function () {
                 return {
                     id: 1
@@ -63,12 +75,15 @@ describe('Handler to return http resource for GET requests', function () {
             isQueryById: function () {
                 return true;
             }
-        };
+        });
 
-        var handlerPayload = new HandlerPayload({},{
+        var handlerPayload = new HandlerPayload(
+          {},
+          makeHandlerLookup({
             $resourceName: resourceName,
             $resourceId: 1
-        },resourceParamMapper);
+          }),
+          resourceParamMapper);
 
         var response = resourceGetter(handlerPayload);
 
@@ -79,7 +94,7 @@ describe('Handler to return http resource for GET requests', function () {
 
     it('testResourceGetter(Object handlerPayload, function responseTransformerCallback) - should return 404 http response with resource not found if resource is not found by id', function () {
         var resourceName = 'people';
-        var resourceParamMapper = {
+        var resourceParamMapper = mockParameterMapper({
             toResourceDaoQueryObject: function () {
                 return {
                     id: 5
@@ -88,12 +103,12 @@ describe('Handler to return http resource for GET requests', function () {
             isQueryById: function () {
                 return true;
             }
-        };
+        });
 
-        var handlerPayload = new HandlerPayload({},{
+        var handlerPayload = new HandlerPayload({},makeHandlerLookup({
             $resourceName: resourceName,
             $resourceId: 5
-        },resourceParamMapper);
+        }),resourceParamMapper);
 
         var response = resourceGetter(handlerPayload);
 
@@ -107,21 +122,21 @@ describe('Handler to return http resource for GET requests', function () {
     it('testResourceGetter(Object handlerPayload, function responseTransformerCallback) - should return response with transformed resource if callback provided and returns transformed resource', function () {
         var resourceName = 'people';
 
-        var resourceParamMapper = {
+        var resourceParamMapper = mockParameterMapper({
             toResourceDaoQueryObject: function () {
                 return null;
             },
             isQueryById: function () {
                 return false;
             }
-        };
+        });
 
         var urlParameters = {
             $resourceName: resourceName,
             page: 'page'
         };
 
-        var handlerPayload = new HandlerPayload({},urlParameters,resourceParamMapper);
+        var handlerPayload = new HandlerPayload({},makeHandlerLookup(urlParameters),resourceParamMapper);
 
         var response = new HandlerResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 
@@ -137,21 +152,21 @@ describe('Handler to return http resource for GET requests', function () {
     it('testResourceGetter(Object handlerPayload, function responseTransformerCallback) - should return response with resource intact if callback returns nothing', function () {
         var resourceName = 'people';
 
-        var resourceParamMapper = {
+        var resourceParamMapper = mockParameterMapper({
             toResourceDaoQueryObject: function () {
                 return null;
             },
             isQueryById: function () {
                 return false;
             }
-        };
+        });
 
         var urlParameters = {
             $resourceName: resourceName,
             page: 'page'
         };
 
-        var handlerPayload = new HandlerPayload({},urlParameters,resourceParamMapper);
+        var handlerPayload = new HandlerPayload({},makeHandlerLookup(urlParameters),resourceParamMapper);
 
         var response = new HandlerResponse(200, httpHeaders, JSON.stringify(people), resourceName);
 
@@ -165,21 +180,21 @@ describe('Handler to return http resource for GET requests', function () {
     it('testResourceGetter(Object handlerPayload, function responseTransformerCallback) - should return 404 response with resource if resource is not found', function () {
         var resourceName = 'non-existing-resource';
 
-        var resourceParamMapper = {
+        var resourceParamMapper = mockParameterMapper({
             toResourceDaoQueryObject: function () {
                 return;
             },
             isQueryById: function () {
                 return false;
             }
-        };
+        });
 
         var urlParameters = {
             $resourceName: resourceName,
             page: 'page'
         };
 
-        var handlerPayload = new HandlerPayload({},urlParameters,resourceParamMapper);
+        var handlerPayload = new HandlerPayload({},makeHandlerLookup(urlParameters),resourceParamMapper);
 
         var response = new HandlerResponse(404, httpHeaders, JSON.stringify({operation:'fetch-resource',result:'no matching resource is found'}), resourceName);
 

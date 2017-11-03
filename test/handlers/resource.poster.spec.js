@@ -1,9 +1,15 @@
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
+var _ = require('lodash');
 
+var makeParameterMapper = require('../../src/handlers/resource.parameter.mapper');
 var HandlerResponse = require('../../src/handlers/handler.response');
 var HandlerPayload = require('../../src/handlers/handler.payload');
+
+function makeHandlerLookup(options){
+	return {name: 'defaultHandlerName', options};
+}
 
 var people = [{
     id: 1,
@@ -40,7 +46,10 @@ describe('Handler to return http resource for POST requests', function () {
         };
 
 
-        var handlerPayload = new HandlerPayload({body: newPeopleObject}, {$resourceName: resourceName}, null);
+        var handlerPayload = new HandlerPayload(
+          {body: newPeopleObject},
+          makeHandlerLookup({$resourceName: resourceName}),
+          makeParameterMapper());
         var response = resourcePoster(handlerPayload);
 
         var expected = new HandlerResponse(200, httpHeaders, JSON.stringify({id: 2}), resourceName);
@@ -57,7 +66,10 @@ describe('Handler to return http resource for POST requests', function () {
             lastName: 'Smith'
         };
 
-        var handlerPayload = new HandlerPayload({body: newPeopleObject}, {$resourceName: resourceName}, null);
+        var handlerPayload = new HandlerPayload(
+          {body: newPeopleObject},
+          makeHandlerLookup({$resourceName: resourceName}),
+          makeParameterMapper());
 
         var response = resourcePoster(handlerPayload);
 

@@ -31,7 +31,7 @@ module.exports = function (resourceUrlParameterMapper, dataFilePath, dataFileExt
 
             var resourceAttributeValue = helpers.getValue(mapping.attribute, resource);
             if (resourceAttributeValue) {
-                var dateValue = moment(resourceAttributeValue, dateFormat).toDate().getTime();
+                var dateValue = moment(resourceAttributeValue, dateFormat).valueOf();
                 helpers.setValue(mapping.attribute, resource, dateValue);
             }
         }

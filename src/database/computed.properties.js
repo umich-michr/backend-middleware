@@ -18,4 +18,8 @@ ComputedProperties.prototype.hydrateResources = function (resourceName, resource
 	else return this.hydrateResource(resourceName, resources);
 };
 
+ComputedProperties.prototype.getResource = function (resourceName) {
+	return this.hydrateResources(resourceName, global.DATABASE[resourceName] || []);
+};
+
 module.exports = ComputedProperties;
