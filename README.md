@@ -8,7 +8,7 @@ a RESTful JSON web service so that a front-end can be developed rapidly and inde
 Suppose you need to consume a JSON api along the lines of:
 
     https://mycompany.com/app-context/resource-name/:id
-    https://mycompany.com/app-context/resounce-name?attribute=value&other-attribute=otherValue
+    https://mycompany.com/app-context/resource-name?attribute=value&other-attribute=otherValue
     https://mycompany.com/app-context/other-resource-name
 
 which return JSON responses along the lines of:
