@@ -1,0 +1,10 @@
+{
+  "dob": {
+    "attribute": "dob",
+    "type": "date"
+  },
+  "is-adult": {
+    "attribute": "isAdult",
+    "type": "boolean"
+  }
+}

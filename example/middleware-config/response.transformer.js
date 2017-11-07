@@ -1,14 +1,5 @@
-// handlerResponse ={
-//      statusCode:200,
-//      headers: {
-//          'x-user-roles':['a','b'],
-//          'Content-Type':'application/json'
-//      },
-//      body:{id:1, name:'John'},
-//      resourceName: 'employee'
-// }
-// handlerPayload = { request:request, urlParameters:{id:10, 'first-name':'John'}, parameterMapper} **!! the last key parameterMapper in the object is not implemented yet see issue #2 in GitHub.
 var _ = require('underscore');
+var paginate = require('../../src/transformers/pagination');
 
 module.exports = function(handlerPayload, handlerResponse) {
 

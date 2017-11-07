@@ -19,6 +19,7 @@ const config ={
         path: './example/middleware-config/mapping',
         extension: '.map.json'
     },
+    computedProperties: require('../middleware-config/computed.properties'),
     responseTransformerCallback:require('../middleware-config/response.transformer.js'),
     contextPath: '/'
 };
