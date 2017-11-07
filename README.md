@@ -1,8 +1,7 @@
 # About
 
-Backend-middleware is a lightweight middleware for express.js meant to be used to mock
-a RESTful JSON web service so that a front-end can be developed rapidly and independently 
-of the server.  
+Backend-middleware is a lightweight middleware for expressive HTTP middleware frameworks such as express.js meant to be used to mock
+a RESTful JSON web service so that a front-end can be developed rapidly and independently of the server.  
 
 ## Example use case
 
