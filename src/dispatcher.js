@@ -14,7 +14,7 @@ var _ = require('underscore');
  *  contextPath (Optional - default backend-middleware) The url path appearing after host name/IP address in the url specifying the context of the application. (Application Root Url)
  * @constructor
  */
-var Dispatcher = function (config) {
+var Dispatcher = function (config, middleware) {
     this.router = uniloc(_.extend(defaultRoutes, config.routes));
     this.routeHandlers = _.extend(defaultHandlers, config.routeHandlers);
 
@@ -47,7 +47,7 @@ var Dispatcher = function (config) {
             var requestHandler = this.routeHandlers[handlerLookup.name];
             if (requestHandler) {
                 var handlerPayload = new HandlerPayload(request, handlerLookup, config.parameterMapper);
-                return requestHandler(handlerPayload, config.responseTransformerCallback);
+                return requestHandler(handlerPayload, config.responseTransformerCallback, middleware);
             }
         }
 

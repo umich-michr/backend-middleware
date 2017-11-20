@@ -22,7 +22,8 @@ var BackendMiddleware = function () {
 
     var resourceUrlParameterMapper, dispatcher, resourceDatabase;
 
-    var init = function(config){
+    var init = thisModule.reload = function(){
+        const config = thisModule.config;
         resourceUrlParameterMapper = new ResourceUrlParameterMapper(config.urlParameterDateFormat, config.resourceUrlParamMapFiles.path, config.resourceUrlParamMapFiles.extension);
         var dispatcherConfig = {
                 routes:config.routes,
@@ -31,7 +32,7 @@ var BackendMiddleware = function () {
                 responseTransformerCallback:config.responseTransformerCallback,
                 contextPath:config.contextPath
         };
-        dispatcher = new Dispatcher(dispatcherConfig);
+        dispatcher = new Dispatcher(dispatcherConfig, thisModule);
         resourceDatabase = new ResourceDatabase(resourceUrlParameterMapper, config.dataFiles.path, config.dataFiles.extension);
         resourceDatabase.start();
 			  const computedProperties = new ComputedProperties(config.computedProperties);
@@ -50,7 +51,8 @@ var BackendMiddleware = function () {
     };
 
    this.create = function(config){
-       init(config);
+       thisModule.config = config;
+       init();
        var jsonBodyParser = bodyParser.json();
        var urlEncodedBodyParser = bodyParser.urlencoded({extended:true});
 
