@@ -83,7 +83,8 @@ module.exports = {
 
     },
     post: function(resourceName, newResourceObject) {
-        if(newResourceObject.id !== 0) {
+        if (newResourceObject.id) {
+            // truthy ids indicate a client side error
             return null;
         }
         var resource = global.DATABASE[resourceName];
