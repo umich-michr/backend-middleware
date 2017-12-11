@@ -24,17 +24,24 @@ const compareOnParameter = handlerPayload => orderSpec => {
 	return (x, y) => (order === 'asc' ? 1 : -1) * naturalCompare(x[attr], y[attr]);
 };
 
+function comparatorFor (handlerPayload, sortExpression) {
+	const attributes = sortExpression.split(',');
+	return lexicographicAll(attributes.map(compareOnParameter(handlerPayload)));
+}
+
 module.exports = function sortTransformer(handlerPayload, handlerResponse) {
 	if (!handlerPayload.getParamOrDefault('sort-by')) {
 		return;
 	}
-	const attributes = handlerPayload.getParamOrDefault('sort-by').split(',');
 
 	const resource = JSON.parse(handlerResponse.body);
 	if (!_.isArray(resource)) return;
 
-	const comparator = lexicographicAll(attributes.map(compareOnParameter(handlerPayload)));
+	const sortExpression = handlerPayload.getParamOrDefault('sort-by');
+	const comparator = comparatorFor(handlerPayload, sortExpression);
 	resource.sort(comparator);
 
 	handlerResponse.body = JSON.stringify(resource);
 };
+
+module.exports.comparatorFor = comparatorFor;
