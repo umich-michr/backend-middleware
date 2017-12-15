@@ -39,6 +39,12 @@ HandlerPayload.prototype = Object.create(helpers, {
 		},
 	},
 
+	getKeyParameterInfo: {
+		value() {
+			return _.values(this.attrMap).find(paramInfo => paramInfo.key);
+		}
+	},
+
 	parseValue: {
 		value(attr, value) {
 			const attrSpec = _.find(this.attrMap, o => o.attribute === attr);
