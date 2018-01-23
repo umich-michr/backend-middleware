@@ -6,8 +6,7 @@ var httpHeaders = {
 };
 
 var resourcePoster = function (handlerPayload) {
-    var urlParameters= handlerPayload.urlParameters;
-    var resourceName = urlParameters.$resourceName;
+    var resourceName = handlerPayload.resourceName;
     var newResourceObject = handlerPayload.request.body;
 
     var failedOperationResponse = {operation:'post-resource',result:'can not save the new resource'};
