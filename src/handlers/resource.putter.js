@@ -8,7 +8,7 @@ var httpHeaders = {
 var resourcePoster = function (handlerPayload) {
 	var urlParameters = handlerPayload.urlParameters;
 	var parameterMapper = handlerPayload.parameterMapper;
-	var resourceName = urlParameters.$resourceName;
+	var resourceName = handlerPayload.resourceName;
 	var newResourceObject = handlerPayload.request.body;
 
 	var failedOperationResponse = {operation: 'put-resource', result: 'no matching resource is found'};

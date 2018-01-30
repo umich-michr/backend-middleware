@@ -8,7 +8,7 @@ var httpHeaders = {
 var resourceGetter = function (handlerPayload, responseTransformerCallback) {
     var urlParameters= handlerPayload.urlParameters;
     var parameterMapper = handlerPayload.parameterMapper;
-    var resourceName = urlParameters.$resourceName;
+    var resourceName = handlerPayload.resourceName;
 
     var failedOperationResponse = {operation:'fetch-resource',result:'no matching resource is found'};
     var handlerResponse = new HandlerResponse(404, httpHeaders, JSON.stringify(failedOperationResponse), resourceName);
