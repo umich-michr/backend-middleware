@@ -1,3 +1,5 @@
+const _ = require('lodash');
+
 function push(l, x) {
 	if (!x) return;
 	if (Array.isArray(x)) {
@@ -12,6 +14,44 @@ function getRouteUrls(route) {
 	push(urls, route.url);
 	push(urls, route.urls);
 	return urls;
+}
+
+function combineTransforms(base, extension) {
+	const combined = {
+		...base,
+		...extension,
+	};
+	if (base.url && extension.url) {
+		combined.url = `${base.url}${extension.url}`;
+	}
+	delete combined.subroutes;
+	return combined;
+}
+
+function flattenRoutes(routes, flattened = [], transform = {}) {
+	routes.forEach(route => {
+		if ('subroutes' in route) {
+			flattenRoutes(route.subroutes, flattened, combineTransforms(transform, route));
+		} else {
+			let urls = getRouteUrls(route);
+			if (transform.url) {
+				urls = urls.map(url => {
+					const [method, path = ''] = url.split(' ');
+					return `${method} ${transform.url}${path}`;
+				});
+			}
+			let resource = route.resource || transform.resource;
+			let name = route.name || transform.name;
+			let handler = route.handler || transform.handler;
+			flattened.push({
+				urls,
+				resource,
+				name,
+				handler,
+			});
+		}
+	});
+	return flattened;
 }
 
 function getRouteNames(route) {
@@ -39,7 +79,7 @@ function getRouteHandler(route) {
 function RouteRegistrar(routes) {
 	this.routes = {};
 	this.handlers = {};
-	routes.forEach(route => {
+	flattenRoutes(routes).forEach(route => {
 		const urls = getRouteUrls(route);
 		const routeNames = getRouteNames(route);
 		const routeHandler = getRouteHandler(route);
