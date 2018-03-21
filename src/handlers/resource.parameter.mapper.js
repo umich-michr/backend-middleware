@@ -28,10 +28,10 @@ ParameterMapper.prototype.extractKeyParameterMap = function (resourceName) {
 	var keyAttributesObjectKeys = Object.keys(keyAttributes);
 
 	if (keyAttributesObjectKeys.length > 1) {
-		throw 'When url is used to query for resource we do not support composite keys for resources.';
+		throw `${resourceName}: When url is used to query for resource we do not support composite keys for resources.`;
 	}
 	else if (keyAttributesObjectKeys.length === 0) {
-		throw 'When url parameter is used to query for resource using id the url object mapping file should have specified a resource attribute to be key by setting mapping attribute key to true';
+		throw `${resourceName}: When url parameter is used to query for resource using id the url object mapping file should have specified a resource attribute to be key by setting mapping attribute key to true`;
 	}
 	else {
 		return keyAttributes[keyAttributesObjectKeys[0]];
