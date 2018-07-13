@@ -1,3 +1,4 @@
+const resourceDao = require('../../src/database/daos/resource.dao');
 function differenceInYears(a, b) {
 	return parseInt(a.getFullYear(), 10) - parseInt(b.getFullYear(), 10);
 }
@@ -24,6 +25,12 @@ module.exports = {
 		},
 		isAdult(person) {
 			return this.age(person) >= 18;
+		}
+	},
+
+	groups: {
+		members(group) {
+			return resourceDao.get('people', {'groupId': group.id});
 		}
 	}
 };

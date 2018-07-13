@@ -1,4 +1,9 @@
 {
+  "id": {
+    "attribute": "id",
+    "key": true,
+    "type": "numeric"
+  },
   "dob": {
     "attribute": "dob",
     "type": "date"

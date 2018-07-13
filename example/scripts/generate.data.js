@@ -1,10 +1,15 @@
-// should be executed from the directory it is in
+// run this file like:
+// node ./generate.data.js
 
 const fs = require('fs');
 
 function readCsv(filename) {
 	const buffer = fs.readFileSync(filename);
-	return buffer.toString().split('\n').map(line => line.split(','));
+	return buffer.toString().split('\n').filter(x => x).map(line => line.split(','));
+}
+
+function writeData(resourceName, list) {
+	fs.writeFileSync(`../middleware-config/data/${resourceName}.json`, JSON.stringify(list, null, 2));
 }
 
 const nicknames = readCsv('./nicknames.csv');
@@ -40,9 +45,10 @@ function formatDate(date) {
 	return date.toISOString().substring(0, 'YYYY-MM-DD'.length);
 }
 
-const people = fromTo(1, 100).map(() => {
+const people = fromTo(1, 100).map(id => {
 	const [firstName, nickname, lastName] = randomName();
 	return {
+		id,
 		firstName,
 		nickname,
 		lastName,
@@ -50,5 +56,17 @@ const people = fromTo(1, 100).map(() => {
 	};
 });
 
-fs.writeFileSync('../middleware-config/data/people.json', JSON.stringify(people, null, 2));
+const groups = fromTo(1000, 1099).map(id => {
+	const [firstName, nickname, lastName] = randomName();
+	return {
+		id,
+		name: `${firstName}-${nickname}-${lastName}`,
+	}
+});
 
+for(let person of people) {
+	person.groupId = randomChoice(groups).id;
+}
+
+writeData('groups', groups);
+writeData('people', people);

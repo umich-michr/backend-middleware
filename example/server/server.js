@@ -7,9 +7,10 @@ var bodyParser = require('body-parser');
 
 //Offline Database BackendMiddleware to mock responses to backend requests.
 const backendMiddleware = require('../../src/middleware.js');
+const routeRegistrar = require('../middleware-config/handlers');
 const config ={
-    routes:require('../middleware-config/routes.js'),
-    handlers:require('../middleware-config/handlers.js'),
+    routes: routeRegistrar.routes,
+    handlers: routeRegistrar.handlers,
     urlParameterDateFormat: 'YYYY-MM-DD',
     dataFiles: {
         path: './example/middleware-config/data',
