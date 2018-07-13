@@ -286,6 +286,9 @@ The values of computed properties are assigned onto the resource itself, and the
 when querying the database, and can be referenced in the resourceUrlParamMap files as an 
 "attribute."
 
+Feel free to import the `resourceDao` from `backend-middleware/src/database/daos/resource.dao`
+to build dynamic relationships between resources which update when entities change via PUTs or POSTs.
+
 ### routes and handlers
 
 Routes are specified by a Javascript object, mapping the route name to a string
@@ -349,6 +352,92 @@ const urlParameters = {
 }
 ```
 
+### The RouteRegistrar
+
+To simplify and unify the handlers and routes objects, there is a `RouteRegistrar` utility
+in `backend-middleware/src/utils/route.registrar`.  It works like so:
+
+```javascript
+const RouteRegistrar = require('backend-middleware/src/utils/route.registrar');
+const routeRegistrar = new RouteRegistrar([
+	{
+		url: 'GET /some/resource/:with/:parameters',
+		handler: function(handlerPayload, responseTransformerCallback) {
+			// just as before
+		}
+	},
+	{
+		url: 'GET /some-url-for-things',
+		resource: 'things',// use things.json
+		handler: require('backend-middleware/src/handlers/resource.getter')
+		// default handlers operate on the data file named by the "resource" key
+	},
+	{
+		url: '/aResourceGroup',
+		subroutes: [
+			{
+				url: 'GET',
+				handler: function() {
+					// a handler for GET /aResourceGroup
+				}
+			},
+			{
+				url: 'GET /:id',
+				handler: function() {
+					// a handler for GET /aResourceGroup/:id
+				}
+			}
+		]
+	},
+]);
+const routes = routeRegistrar.routes;
+const handlers = routeRegistrar.handlers;
+```
+
+This allows you to automate common patterns in your configuration.  For example:
+
+```javascript
+const resourceGetter = require('backend-middleware/src/handlers/resource.getter');
+const resourcePutter = require('backend-middleware/src/handlers/resource.putter');
+const resourcePoster = require('backend-middleware/src/handlers/resource.poster');
+function makeCollectionResource(name, resource = name) {
+	return {
+		url: `/${name}`,
+		resource: resource,
+		subroutes: [
+			{
+				url: 'GET',
+				handler: resourceGetter
+			},
+			{
+				url: 'GET /:$resourceId',
+				handler: resourceGetter
+			},
+			{
+				url: 'PUT /:$resourceId',
+				handler: resourcePutter
+			},
+			{
+				url: 'POST',
+				handler: resourcePoster
+			}
+		]
+	}
+}
+
+const routeRegistrar = new RouteRegistrar([
+	makeCollectionResource('people'),
+	makeCollectionResource('groups'),
+	makeCollectionResource('groups/:groupId/members', 'people'),
+	makeCollectionResource('employees'),
+]);
+```
+
+Note that using `$resourceId` as a parameter with the default handlers makes a query
+on the attributes marked with `"key": true` in the parameter mapping file, and consequently
+causes them to return objects rather than arrays of objects, since the handler knows the
+query is unique.
+
 ### HandlerPayload
 
 The handler payload has a number of helper methods, but they require the handler payload
@@ -362,9 +451,10 @@ You can specify the resource name to the handler payload by setting on the objec
 handlerPayload.resourceName = 'myResource';
 ```
 
-However, it will infer it in two cases:
+However, it will infer it in three cases:
 
 1. If there are at least two words in the route name, the resource name is taken as the first word.
+1. If you are using the route registrar, it is the value of the `"resource"` key.
 1. Otherwise, it is the value of the url parameter named `$resourceName`.
 
 An example of the first case:
