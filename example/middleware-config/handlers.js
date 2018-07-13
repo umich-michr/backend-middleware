@@ -12,7 +12,7 @@
 //                                                    , urlParameters)
 //
 var util = require('util');
-var _ = require('underscore');
+var _ = require('lodash');
 var users = require('./users.json');
 var HandlerResponse = require('../../src/handlers/handler.response');
 var RouteRegistrar = require('../../src/utils/route.registrar');

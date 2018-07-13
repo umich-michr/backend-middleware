@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var paginate = require('../../src/transformers/pagination');
 
 module.exports = function(handlerPayload, handlerResponse) {

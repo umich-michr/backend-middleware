@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var helpers = require('../../../src/utils/helpers');
 
 module.exports = {
@@ -18,7 +18,7 @@ module.exports = {
             }
             else {
                 return function () {
-                    return _.contains(daoQueryParamValue, valueToCompare);
+                    return _.includes(daoQueryParamValue, valueToCompare);
                 };
             }
         }
@@ -37,7 +37,7 @@ module.exports = {
             }
             else {
                 return function () {
-                    return _.contains(daoQueryParamValue, valueToCompare);
+                    return _.includes(daoQueryParamValue, valueToCompare);
                 };
             }
         }
@@ -90,7 +90,7 @@ module.exports = {
         var resource = global.DATABASE[resourceName];
 
         if(resource && _.isArray(resource)) {
-            var maxId = _.max(resource, function(resourceObject){ return resourceObject.id; }).id;
+            var maxId = _.maxBy(resource, function(resourceObject){ return resourceObject.id; }).id;
             newResourceObject.id = maxId + 1;
             resource.push(newResourceObject);
         } else {

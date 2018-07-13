@@ -1,5 +1,5 @@
 var helpers = require('../utils/helpers');
-var _ = require('underscore');
+var _ = require('lodash');
 
 const RESOURCEID_URL_PARAM_NAME = '$resourceId';
 
@@ -22,7 +22,7 @@ ParameterMapper.prototype.extractKeyParameterMap = function (resourceName) {
 	if (!resourceUrlParamMap) {
 		throw 'No url parameter mapping was found for the resource ' + resourceName;
 	}
-	var keyAttributes = _.pick(resourceUrlParamMap, function (value, key, object) {
+	var keyAttributes = _.pickBy(resourceUrlParamMap, function (value, key, object) {
 		return value.key
 	});
 	var keyAttributesObjectKeys = Object.keys(keyAttributes);

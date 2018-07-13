@@ -1,5 +1,5 @@
 var helperFunctions = require('./helpers');
-var _ = require('underscore');
+var _ = require('lodash');
 
 function UrlParser(queryStringParamObjectAttributeMap, paramValueDateFormat) {
 

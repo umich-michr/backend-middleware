@@ -3,7 +3,6 @@ var ResourceDatabase = require('./database/resource.database');
 var ComputedProperties = require('./database/computed.properties');
 var ResourceUrlParameterMapper = require('./handlers/resource.parameter.mapper');
 
-var _ = require('underscore');
 var bodyParser = require('body-parser');
 var BackendMiddleware = function () {
 
