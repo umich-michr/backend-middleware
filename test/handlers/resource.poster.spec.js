@@ -1,7 +1,6 @@
 var assert = require('chai').assert;
 var proxyquire = require('proxyquire');
 var sinon = require('sinon');
-var _ = require('lodash');
 
 var makeParameterMapper = require('../../src/handlers/resource.parameter.mapper');
 var HandlerResponse = require('../../src/handlers/handler.response');

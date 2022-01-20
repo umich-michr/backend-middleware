@@ -1,9 +1,9 @@
 var helperFunctions = require('./helpers');
 var _ = require('underscore');
 
-function UrlParser(queryStringParamObjectAttributeMap, paramValueDateFormat) {
+function UrlParser(queryStringParamObjectAttributeMap, paramValueDateFormat = helperFunctions.defaultDateFormat) {
 
-    this.paramValueDateFormat = paramValueDateFormat || helperFunctions.defaultDateFormat;
+    this.paramValueDateFormat = paramValueDateFormat;
 
     this.queryStringToDaoParameter = function (resourceName, queryString) {
         var queryStringKeyValues = this.extractQueryStringParameters(queryString);

@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const _ = require('underscore');
 
 function ComputedProperties(config) {
 	this.config = config;
@@ -7,7 +7,7 @@ function ComputedProperties(config) {
 ComputedProperties.prototype.hydrateResource = function (resourceName, resource) {
 	const props = this.config && this.config[resourceName];
 	if (!props) return resource;
-	_.assign(resource, _.mapValues(props, (func) =>
+	_.assign(resource, _.mapObject(props, (func) =>
 		func.call(props, resource, resourceName)));
 	return resource;
 };

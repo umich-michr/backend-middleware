@@ -34,7 +34,7 @@ curl -i -k -XPUT https://localhost:3000/people/5 \
  -d '{"id":5,"firstName":"Samuel","nickname":"Sammy the Sam-man","lastName":"Otto","dob":1488472400000,"groupId":1001}' \
  -H 'Content-Type: application/json'
         </pre>
-        Notice that this changes person 5's nickname, and date of birth.  The date of birch changes causes
+        Notice that this changes person 5's nickname, and date of birth.  The date of birth change causes
         the "isAdult" field to become false, since it is a computed property.  Those changes are also reflected in the
         "/groups" endpoint, even though the PUT was only to the "/people" endpoint.  This works since
         computed properties are re-computed on each fetch, and the computed property

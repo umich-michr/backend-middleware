@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 function push(l, x) {
 	if (!x) return;
 	if (Array.isArray(x)) {

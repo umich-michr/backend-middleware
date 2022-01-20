@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const _ = require('underscore');
 const helpers = require('../utils/helpers');
 
 function findResourceName({name, options}) {

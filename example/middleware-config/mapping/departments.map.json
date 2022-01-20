@@ -1,0 +1,14 @@
+{
+    "id":{
+        "attribute":"id",
+        "type":"numeric",
+        "key":true
+    },
+    "name":{
+        "attribute":"name"
+    },
+    "manager-id":{
+        "attribute":"managers.id",
+        "type":"numeric"
+    }
+}

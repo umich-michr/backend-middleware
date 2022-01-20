@@ -1,0 +1,220 @@
+[
+    {
+        "id":10,
+        "name":"Physics",
+        "pioneers": [
+			{
+            "id":1000,
+            "firstName":"Issac",
+            "lastName":"Newton",
+            "birthDate":"1643-01-04",
+            "giants": [
+                {
+                    "id": 10,
+                    "firstName":"Albert",
+                    "lastName":"Einstein",
+                   " birthDate":"1879-03-14"
+                },
+                {
+                    "id": 20,
+                    "firstName":"Niels",
+                    "lastName":"Bohr",
+                    "birthDate":"1885-11-18"
+                },
+                {
+                    "id": 30,
+                    "firstName":"Werner",
+                    "lastName":"Heisenberg",
+                    "birthDate":"1901-12-05"
+                },
+                {
+                    "id": 40,
+                    "firstName":"Blaise",
+                    "lastName":"Pascal",
+                    "birthDate":"1623-06-19"
+                }
+            ]
+		},
+        	{
+            "id": 2000,
+            "firstName":"James Clerk",
+            "lastName":"Maxwel",
+            "birthDate":"1831-06-13",
+            "giants":[
+				{
+                "id": 50,
+                "firstName":"Nikola",
+                "lastName":"Tesla",
+                "birthDate":"1856-07-10"
+            	},
+            	{
+                "id": 60,
+                "firstName":"John Vincent",
+                "lastName":"Atanasoff",
+                "birthDate":"1903-10-04"
+            }
+            ]
+        }
+        ]
+    },
+    {
+        "id":20,
+        "name":"Math",
+        "pioneers": [
+			{
+            "id":1000,
+            "firstName":"Issac",
+            "lastName":"Newton",
+            "birthDate":"1643-01-04",
+            "giants": [
+                {
+                    "id": 10,
+                    "firstName":"Albert",
+                    "lastName":"Einstein",
+                   " birthDate":"1879-03-14"
+                },
+                {
+                    "id": 70,
+                    "firstName":"Daniel",
+                    "lastName":"Bernoulli",
+                    "birthDate":"1782-03-17"
+                },
+                {
+                    "id": 2000,
+                    "firstName":"James Clerk",
+                    "lastName":"Maxwel",
+                    "birthDate":"1831-06-13"
+                }
+            ]
+        },
+        {
+            "id":3000,
+            "firstName":"Gottfried Wilhelm",
+            "lastName":"Leibniz",
+            "birthDate":"1646-07-01",
+            "giants":[
+				{
+                "id": 2000,
+                "firstName":"James Clerk",
+                "lastName":"Maxwel",
+                "birthDate":"1831-06-13"
+            },
+            	{
+                "id": 80,
+                "firstName":"Leonhard",
+                "lastName":"Euler",
+                "birthDate":"1707-04-15"
+            },
+            	{
+                "id": 130,
+                "firstName":"Alan",
+                "lastName":"Turing",
+                " birthDate":"1912-06-23"
+            },
+            	{
+                "id": 60,
+                "firstName":"John Vincent",
+                "lastName":"Atanasoff",
+                "birthDate":"1903-10-04"
+            }
+            ]
+        }
+        ]
+    },
+    {
+        "id":30,
+        "name":"Biology",
+        "pioneers": [
+			{
+            "id":4000,
+            "firstName":"Nasir al-Din",
+            "lastName":"al-Tusi",
+            "birthDate":"1201-02-18",
+            "giants": [
+                {
+                    "id": 100,
+                    "firstName":"Antonie",
+                    "lastName":"van Leeuwenhoek",
+                    "birthDate":"1632-10-24"
+                },
+                {
+                    "id": 110,
+                    "firstName":"Charles",
+                    "lastName":"Darwin",
+                    "birthDate":"1809-02-12"
+                },
+                {
+                    "id": 120,
+                    "firstName":"Gregor",
+                    "lastName":"Mendel",
+                    "birthDate":"1822-07-20"
+                }
+            ]
+        }
+        ]
+    },
+    {
+        "id":40,
+        "name":"Computer Science",
+        "pioneers": [
+			{
+            "id":5000,
+            "firstName":"John L.",
+            "lastName":"von Neumann",
+            "birthDate":"1903-12-28",
+            "giants": [
+                {
+                    "id": 130,
+                    "firstName":"Alan",
+                    "lastName":"Turing",
+                   " birthDate":"1912-06-23"
+                },
+                {
+                    "id": 140,
+                    "firstName":"Alan",
+                    "lastName":"Perlis",
+                    "birthDate":"1922-04-01"
+                },
+                {
+                    "id": 150,
+                    "firstName":"Kristen",
+                    "lastName":"Nygaard",
+                    "birthDate":"1926-08-27"
+                },
+                {
+                    "id": 60,
+                    "firstName":"John Vincent",
+                    "lastName":"Atanasoff",
+                    "birthDate":"1903-10-04"
+                }
+            ]
+        },
+        {
+            "id":6000,
+            "firstName":"Muhammad ibn Musa",
+            "lastName":"al Khwarizmi",
+            "birthDate":"780-01-01",
+            "giants": [
+                {
+                    "id": 170,
+                    "firstName":"Charles",
+                    "lastName":"Babbage",
+                   " birthDate":"1791-12-26"
+                },
+                {
+                    "id": 180,
+                    "firstName":"Ada",
+                    "lastName":"Lovelace",
+                    "birthDate":"1815-12-10"
+                },
+				{
+                	"id": 50,
+                	"firstName":"Nikola",
+                	"lastName":"Tesla",
+                	"birthDate":"1856-07-10"
+            	}
+            ]
+        }
+        ]
+    }
+]

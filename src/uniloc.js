@@ -1,5 +1,5 @@
 const RouteRecognizer = require('route-recognizer');
-const _ = require('lodash');
+const _ = require('underscore');
 
 function transformQueryParts(url, transform) {
 	const i = url.indexOf('?');
@@ -43,7 +43,7 @@ function makeRouter(routes) {
 	// studiesRoute ==> the router holding the route named "studiesRoute"
 	const routeToRouter = {};// ie, route name to router
 
-	routes = _.toPairs(routes);
+	routes = _.pairs(routes);
 	var i;
 
 	for (i = 0; i < routes.length; i++) {
@@ -86,10 +86,10 @@ function makeRouter(routes) {
 		if (!router) throw new Error('Unknown route name ' + name);
 		const url = router.generate(name, options);
 		var params = router.recognize(url)[0].params;
-		const queryParams = _.pickBy(options, function (value, key) {
+		const queryParams = _.pick(options, function (value, key) {
 			return !params.hasOwnProperty(key);
 		});
-		params = _.pickBy(options, function (value, key) {
+		params = _.pick(options, function (value, key) {
 			return params.hasOwnProperty(key);
 		});
 		params.queryParams = queryParams;

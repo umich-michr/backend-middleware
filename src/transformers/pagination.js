@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const _ = require('underscore');
 
 module.exports = function paginationTransformer(handlerPayload, handlerResponse){
 	var page = handlerPayload.urlParameters['page'];
