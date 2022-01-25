@@ -54,9 +54,9 @@
   ],
   "license": "SEE LICENSE IN LICENSE",
   "bugs": {
-    "url": "https://github.com/michr-cri/backend-middleware/issues"
+    "url": "https://github.com/umich-michr/backend-middleware/issues"
   },
-  "homepage": "https://github.com/michr-cri/backend-middleware#readme",
+  "homepage": "https://github.com/umich-michr/backend-middleware#readme",
   "devDependencies": {
     "browser-sync": "^2.27.7",
     "chai": "^4.3.4",
